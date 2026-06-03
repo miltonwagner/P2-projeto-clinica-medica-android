@@ -1,0 +1,9 @@
+{
+  "_comentario": "Baixe o google-services.json real do Firebase Console e coloque em app/google-services.json",
+  "_instrucoes": "Acesse: Firebase Console > Configurações do Projeto > Seus aplicativos > Android > Baixar google-services.json",
+  "project_info": {
+    "project_number": "SEU_PROJECT_NUMBER",
+    "project_id": "SEU_PROJECT_ID",
+    "storage_bucket": "SEU_PROJECT_ID.appspot.com"
+  }
+}

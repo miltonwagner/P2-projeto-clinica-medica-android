@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <Button
+        android:id="@+id/btnVoltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← VOLTAR"
+        android:backgroundTint="#2E7D32"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@id/btnVoltar"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logomed"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Novo Agendamento"
+            android:textSize="22sp"
+            android:textColor="#2E7D32"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Especialidade e Médico:" android:textStyle="bold" android:layout_marginTop="15dp"/>
+
+            <Spinner android:id="@+id/spinnerEspecialidades" android:layout_width="match_parent"
+                android:layout_height="55dp" android:entries="@array/especialidades_array" />
+
+            <Spinner android:id="@+id/spinnerMedicos" android:layout_width="match_parent"
+                android:layout_height="55dp" />
+
+            <Button android:id="@+id/btnSelecionarData" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="15dp"
+                android:text="Escolher Data" android:backgroundTint="#E8F5E9" android:textColor="#000000"/>
+
+            <TextView android:id="@+id/txtDataSelecionada" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:gravity="center" android:text="Data não selecionada"
+                android:padding="5dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Selecione o Horário:" android:textStyle="bold" android:layout_marginTop="15dp"/>
+
+            <GridLayout android:id="@+id/gridHorarios" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:columnCount="3" android:layout_marginTop="10dp"
+                android:alignmentMode="alignMargins" />
+
+            <Button android:id="@+id/btnConfirmarAgendamento" android:layout_width="match_parent"
+                android:layout_height="65dp" android:layout_marginTop="25dp"
+                android:text="CONFIRMAR AGENDAMENTO" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+
+

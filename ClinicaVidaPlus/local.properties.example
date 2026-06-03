@@ -1,0 +1,8 @@
+# Copie este arquivo para local.properties e preencha com seus valores reais.
+# NUNCA faça commit do arquivo local.properties — ele está no .gitignore.
+
+sdk.dir=/caminho/para/seu/Android/sdk
+
+# Credenciais de e-mail (Senha de App do Gmail — não use a senha normal)
+EMAIL_REMETENTE=seu_email@gmail.com
+SENHA_APP=sua_senha_de_app_aqui
