@@ -180,14 +180,14 @@ clinicavidaplus/
 | Localização | `EnderecoActivity` | Mapa OSM com pin da clínica e GPS do usuário |
 
 <p align="center">
-  <img src="app/assets/tela-home.jpg" width="200" alt="Home"/>
-  <img src="app/assets/tela-login.jpg" width="200" alt="Login"/>
-  <img src="app/assets/tela-cadastro.jpg" width="200" alt="Cadastro"/>
+  <img src="assets/tela-home.jpg" width="200" alt="Home"/>
+  <img src="assets/tela-login.jpg" width="200" alt="Login"/>
+  <img src="assets/tela-cadastro.jpg" width="200" alt="Cadastro"/>
 </p>
 <p align="center">
-  <img src="app/assets/tela-agendamento.jpg" width="200" alt="Agendamento"/>
-  <img src="app/assets/tela-email.jpg" width="200" alt="E-mail"/>
-  <img src="app/assets/tela-localizacao.jpg" width="200" alt="Localização"/>
+  <img src="assets/tela-agendamento.jpg" width="200" alt="Agendamento"/>
+  <img src="assets/tela-email.jpg" width="200" alt="E-mail"/>
+  <img src="assets/tela-localizacao.jpg" width="200" alt="Localização"/>
 </p>
 
 ---
