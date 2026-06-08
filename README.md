@@ -3,8 +3,11 @@
 > Aplicativo mobile para gestão de consultas médicas, desenvolvido em Java com Android Studio.
 >
 > Curso: Desenvolvimento de Software Multiplataforma — 4º Semestre
+>
 > Aluno: Milton Wagner Filho
+>
 > Professora: Simone Mendes
+>
 > Ano: 1/2026
 
 ---
@@ -16,11 +19,11 @@
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Arquitetura](#arquitetura)
 - [Estrutura de Arquivos](#estrutura-de-arquivos)
-- [Pré-requisitos](#pré-requisitos)
+- [Pre-requisitos](#pre-requisitos)
 - [Como Executar](#como-executar)
 - [Telas do Aplicativo](#telas-do-aplicativo)
 - [Conceitos Implementados](#conceitos-implementados)
-- [Referências](#referências)
+- [Referencias](#referencias)
 
 ---
 
@@ -92,7 +95,7 @@ O aplicativo segue arquitetura de camadas com padrão Repository:
 └──────────────────┬──────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────┐
-│           Camada de Lógica                  │
+│           Camada de Logica                  │
 │  PacienteRepository — coordena ROOM e       │
 │  Firebase · EmailSender (AsyncTask SMTP)    │
 └──────────┬───────────────────┬──────────────┘
@@ -126,12 +129,12 @@ clinicavidaplus/
 │   │   │   ├── MainActivity.java               # Cadastro de paciente
 │   │   │   ├── LoginActivity.java              # Login e-mail + Google
 │   │   │   ├── ConsultasActivity.java          # Agendamento de consultas
-│   │   │   ├── ListaConsultasActivity.java     # Confirmação do agendamento
-│   │   │   ├── EnderecoActivity.java           # Mapa com localização da clínica
+│   │   │   ├── ListaConsultasActivity.java     # Confirmacao do agendamento
+│   │   │   ├── EnderecoActivity.java           # Mapa com localizacao da clinica
 │   │   │   ├── EmailSender.java                # Envio de e-mail SMTP
 │   │   │   ├── Paciente.java                   # Entity ROOM + modelo Firebase
-│   │   │   ├── PacienteDao.java                # DAO — operações no banco local
-│   │   │   ├── AppDatabase.java                # Configuração do banco ROOM
+│   │   │   ├── PacienteDao.java                # DAO — operacoes no banco local
+│   │   │   ├── AppDatabase.java                # Configuracao do banco ROOM
 │   │   │   └── PacienteRepository.java         # Repository — ROOM + Firebase
 │   │   ├── res/layout/
 │   │   │   ├── activity_index.xml
@@ -149,7 +152,7 @@ clinicavidaplus/
 
 ---
 
-## Pré-requisitos
+## Pre-requisitos
 
 - Android Studio Hedgehog ou superior
 - JDK 11 ou superior
@@ -184,10 +187,11 @@ clinicavidaplus/
   <img src="assets/tela-login.jpg" width="200" alt="Login"/>
   <img src="assets/tela-cadastro.jpg" width="200" alt="Cadastro"/>
 </p>
+
 <p align="center">
   <img src="assets/tela-agendamento.jpg" width="200" alt="Agendamento"/>
   <img src="assets/tela-email.jpg" width="200" alt="E-mail"/>
-  <img src="assets/tela-localizacao.jpg" width="200" alt="Localização"/>
+  <img src="assets/tela-localizacao.jpg" width="200" alt="Localizacao"/>
 </p>
 
 ---
@@ -195,20 +199,24 @@ clinicavidaplus/
 ## Conceitos Implementados
 
 ### 1. Conexão Local — ROOM
+
 Biblioteca Android de persistência local baseada em SQLite. Ao cadastrar, os dados do paciente são salvos no banco local `clinica_db` (tabela `pacientes`) via `PacienteRepository`, permitindo acesso offline.
 
 ### 2. Conexão Remota — Firebase Firestore
+
 Banco de dados NoSQL em nuvem. Agendamentos e dados de pacientes são sincronizados remotamente em tempo real, permitindo que múltiplos dispositivos visualizem horários ocupados instantaneamente.
 
 ### 3. Autenticação com Google
+
 Implementada via Firebase Authentication com Google Sign-In. O paciente pode criar conta e fazer login usando sua conta Google, sem precisar digitar senha.
 
 ### 4. Geolocalização
+
 Utiliza `FusedLocationProviderClient` para obter as coordenadas GPS do usuário e a biblioteca `osmdroid` para renderizar o mapa OpenStreetMap com um marcador fixo na clínica e outro marcador dinâmico na posição atual do usuário.
 
 ---
 
-## Referências
+## Referencias
 
 - Firebase Documentation. Google LLC. Disponível em: https://firebase.google.com/docs
 - Android Developers — ROOM. Disponível em: https://developer.android.com/training/data-storage/room
@@ -219,6 +227,7 @@ Utiliza `FusedLocationProviderClient` para obter as coordenadas GPS do usuário 
 ---
 
 > **Clínica Médica Vida Plus** — Rua Bernardino de Campos, 933, Centro, Indaiatuba – SP
-> Telefone: (19) 99447.4377 | E-mail: milton.wagner2013@gmail.com
+>
+> Telefone: (19) 99999.9999 | E-mail: clinica@gmail.com
+>
 > © 2026 Clínica Médica Vida Plus
-> 
