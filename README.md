@@ -16,7 +16,7 @@
 
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Funcionalidades](#funcionalidades)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Tecnologias](#tecnologias)
 - [Arquitetura](#arquitetura)
 - [Estrutura de Arquivos](#estrutura-de-arquivos)
 - [Pre-requisitos](#pre-requisitos)
@@ -63,7 +63,7 @@ O projeto foi desenvolvido como trabalho acadêmico do curso de Desenvolvimento 
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias
 
 | Categoria | Tecnologia | Finalidade |
 |---|---|---|
