@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">PsycoNet</string>
+
+    <!-- Cabeçalho -->
+    <string name="voltar">Voltar</string>
+    <string name="logo_desc">Logo PsycoNet</string>
+    <string name="novo_agendamento">Novo agendamento</string>
+    <string name="novo_agendamento_sub">Escolha a especialidade, o médico e o melhor horário.</string>
+
+    <!-- Formulário -->
+    <string name="especialidade_e_medico">Especialidade e médico</string>
+    <string name="hint_especialidade">Especialidade</string>
+    <string name="hint_medico">Médico</string>
+    <string name="data_da_consulta">Data da consulta</string>
+    <string name="escolher_data">Escolher data</string>
+    <string name="escolher_data_titulo">Escolha a data da consulta</string>
+    <string name="nenhuma_data">Nenhuma data selecionada</string>
+    <string name="horario">Horário</string>
+    <string name="horarios_vazio">Escolha uma data para ver os horários disponíveis.</string>
+    <string name="confirmar_agendamento">Confirmar agendamento</string>
+
+    <!-- Validação e confirmação -->
+    <string name="erro_especialidade">Selecione uma especialidade.</string>
+    <string name="erro_medico">Selecione o médico.</string>
+    <string name="erro_data">Escolha a data da consulta.</string>
+    <string name="erro_horario">Selecione um horário.</string>
+    <string name="sucesso_titulo">Agendamento confirmado</string>
+    <string name="sucesso_mensagem">%1$s com %2$s\n%3$s, às %4$s</string>
+    <string name="ok">OK</string>
+</resources>

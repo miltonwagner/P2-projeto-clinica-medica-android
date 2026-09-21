@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Marca: verde-floresta com toques de menta -->
+    <color name="brand_900">#0B3D2E</color>
+    <color name="brand_700">#14634A</color>
+    <color name="brand_500">#1F8A63</color>
+    <color name="brand_300">#7CC4A4</color>
+    <color name="brand_100">#DDF2E8</color>
+    <color name="brand_50">#F1FAF5</color>
+
+    <!-- Superfícies -->
+    <color name="background">#F5F8F6</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="stroke">#DCE6E0</color>
+
+    <!-- Texto -->
+    <color name="text_primary">#12261E</color>
+    <color name="text_secondary">#5B6F65</color>
+    <color name="text_hint">#93A39B</color>
+    <color name="text_on_brand">#FFFFFF</color>
+
+    <!-- Estados -->
+    <color name="disabled_bg">#E3EAE6</color>
+    <color name="disabled_text">#9AAAA2</color>
+    <color name="error">#C0392B</color>
+</resources>
