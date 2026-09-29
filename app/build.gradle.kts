@@ -32,6 +32,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    lint {
+        lintConfig = file("../lint.xml")
+        abortOnError = true
+    }
+
     // Necessário para o JavaMail funcionar no Android
     packaging {
         resources {

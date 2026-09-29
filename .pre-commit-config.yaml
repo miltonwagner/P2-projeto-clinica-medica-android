@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: android-lint
+        name: Android Lint
+        entry: ./gradlew lintDebug
+        language: system
+        pass_filenames: false
+        files: \.(java|xml|kts)$
