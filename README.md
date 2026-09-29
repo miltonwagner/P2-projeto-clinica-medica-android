@@ -231,3 +231,14 @@ Utiliza `FusedLocationProviderClient` para obter as coordenadas GPS do usuário 
 > Telefone: (19) 99999.9999 | E-mail: clinica@gmail.com
 >
 > © 2026 Clínica Médica Vida Plus
+
+## Configuração do Lint e pre-commit (novos integrantes)
+
+O commit roda o Android Lint automaticamente (`./gradlew lintDebug`) e é bloqueado se houver erro.
+
+1. Instale o Python e o pre-commit: `pip install pre-commit`
+2. Na raiz do projeto: `pre-commit install`
+3. Crie `local.properties` com `sdk.dir=C:/caminho/do/Sdk` e coloque seu `app/google-services.json` (ambos ficam fora do Git).
+4. Teste: `pre-commit run --all-files`
+
+Rodar o Lint manualmente: `./gradlew lint` — relatório em `app/build/reports/lint-results-debug.html`.
