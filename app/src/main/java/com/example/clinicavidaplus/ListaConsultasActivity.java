@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -23,6 +24,14 @@ public class ListaConsultasActivity extends AppCompatActivity {
 
         // Voltar tela inicial
         btnVoltar.setOnClickListener(v -> irParaInicio());
+
+        // Tratamento moderno para o botão/gesto de voltar (substitui o onBackPressed obsoleto)
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                irParaInicio();
+            }
+        });
 
         // Pega o ID do agendamento passado pelo ConsultasActivity
         String agendamentoId = getIntent().getStringExtra("agendamentoId");
@@ -47,12 +56,6 @@ public class ListaConsultasActivity extends AppCompatActivity {
         } else {
             txtMed.setText("Erro ao carregar agendamento");
         }
-    }
-
-    // Ao apertar Voltar do celular também vai para a tela inicial
-    @Override
-    public void onBackPressed() {
-        irParaInicio();
     }
 
     private void irParaInicio() {
