@@ -25,6 +25,6 @@
     <string name="erro_data">Escolha a data da consulta.</string>
     <string name="erro_horario">Selecione um horário.</string>
     <string name="sucesso_titulo">Agendamento confirmado</string>
-    <string name="sucesso_mensagem">%1$s com %2$s\n%3$s, às %4$s</string>
+    <string name="sucesso_mensagem">Médico(a): %1$s\nData: %2$s\nHorário: %3$s</string>
     <string name="ok">OK</string>
 </resources>

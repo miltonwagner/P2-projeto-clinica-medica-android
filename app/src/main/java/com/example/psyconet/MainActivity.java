@@ -1,6 +1,7 @@
 package com.example.psyconet;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
@@ -29,11 +31,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+// Imports do Firebase Firestore
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,23 +58,26 @@ public class MainActivity extends AppCompatActivity {
     private ChipGroup chipGroupHorarios;
     private MaterialButton btnConfirmar;
 
+    // Instância do Firebase Firestore
+    private FirebaseFirestore db;
+
     // ---------- Estado ----------
     private String dataSelecionada = null;
 
     // ---------- Dados de exemplo ----------
-    // TODO: trocar por dados vindos de uma API / Firebase / banco local.
     private final List<String> listaMedicos = new ArrayList<>();
 
-    // TODO: buscar os horários livres do médico na data escolhida.
     private final List<String> horariosDisponiveis = Arrays.asList(
             "08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Ícones claros na barra de status, pois o cabeçalho é verde-escuro.
         EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inicializa o Firestore
+        db = FirebaseFirestore.getInstance();
 
         carregarDadosDeExemplo();
         vincularViews();
@@ -103,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         btnConfirmar = findViewById(R.id.btnConfirmar);
     }
 
-    /** Empurra o cabeçalho para baixo da barra de status e o botão para cima da barra de navegação. */
     private void ajustarInsets() {
         final int topBase = header.getPaddingTop();
         ViewCompat.setOnApplyWindowInsetsListener(header, (v, insets) -> {
@@ -122,17 +131,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // ---------- Médico / Profissional ----------
-
     private void configurarMedicos() {
         medicoDropdown.setAdapter(new DropdownAdapter(this, listaMedicos));
         tilMedico.setEnabled(true);
     }
 
-    // ---------- Data e horário ----------
-
     private void configurarAcoes() {
-        // TODO: trocar por navegação quando houver outras telas
         btnVoltar.setOnClickListener(v -> finish());
         btnEscolherData.setOnClickListener(v -> abrirCalendario());
         btnConfirmar.setOnClickListener(v -> confirmarAgendamento());
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void abrirCalendario() {
         CalendarConstraints restricoes = new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.now()) // bloqueia datas passadas
+                .setValidator(DateValidatorPointForward.now())
                 .build();
 
         MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             Locale ptBr = Locale.forLanguageTag("pt-BR");
             SimpleDateFormat formato =
                     new SimpleDateFormat("EEEE, dd 'de' MMMM 'de' yyyy", ptBr);
-            formato.setTimeZone(TimeZone.getTimeZone("UTC")); // o DatePicker devolve a data em UTC
+            formato.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             String texto = formato.format(millisUtc);
             texto = texto.substring(0, 1).toUpperCase(ptBr) + texto.substring(1);
@@ -185,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
             chip.setTextColor(seletor(corTextoSobreMarca, corTexto));
             chip.setChipStrokeColor(seletor(corMarca, corBorda));
             chip.setChipStrokeWidth(dp);
-            chip.setChipCornerRadius(12 * dp);
+            chip.setChipCornerRadius(12f * dp);
+
             chipGroupHorarios.addView(chip);
         }
         tvHorariosVazio.setVisibility(View.GONE);
     }
 
-    /** Cor para o estado "selecionado" e outra para os demais estados. */
     private ColorStateList seletor(int corSelecionado, int corNormal) {
         return new ColorStateList(
                 new int[][]{
@@ -201,19 +205,23 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{corSelecionado, corNormal});
     }
 
-    // ---------- Confirmação ----------
+    // ---------- Confirmação e Integração com Firebase ----------
 
     private void confirmarAgendamento() {
         String medico = medicoDropdown.getText().toString();
         String data = dataSelecionada;
 
-        String horario = null;
+        String horario;
         int chipId = chipGroupHorarios.getCheckedChipId();
         if (chipId != View.NO_ID) {
             Chip chip = chipGroupHorarios.findViewById(chipId);
             if (chip != null) {
                 horario = chip.getText().toString();
+            } else {
+                horario = null;
             }
+        } else {
+            horario = null;
         }
 
         int erro = 0;
@@ -232,13 +240,32 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: salvar o agendamento (API / Firebase / Room).
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.sucesso_titulo)
-                .setMessage(getString(R.string.sucesso_mensagem, medico, data, horario))
-                .setPositiveButton(R.string.ok, (dialog, which) -> limparFormulario())
-                .setCancelable(false)
-                .show();
+        // Criando o objeto com os dados da consulta para o Firebase
+        Map<String, Object> consulta = new HashMap<>();
+        consulta.put("psicologo", medico);
+        consulta.put("data", data + " às " + horario);
+        consulta.put("emailUsuario", "usuario@email.com"); // Substitua pelo e-mail real se tiver autenticação
+
+        // Salvando na coleção "agendamentos" do Firestore
+        db.collection("agendamentos")
+                .add(consulta)
+                .addOnSuccessListener(documentReference -> {
+                    // Exibe o diálogo de sucesso e ao clicar em OK abre a tela de próximas consultas
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle(R.string.sucesso_titulo)
+                            .setMessage(getString(R.string.sucesso_mensagem, medico, data, horario))
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                limparFormulario();
+                                // Abre a tela de Próximas Consultas
+                                Intent intent = new Intent(MainActivity.this, UpcomingAppointmentsActivity.class);
+                                startActivity(intent);
+                            })
+                            .setCancelable(false)
+                            .show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Erro ao salvar agendamento: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
     private void limparFormulario() {
@@ -250,12 +277,7 @@ public class MainActivity extends AppCompatActivity {
         tvHorariosVazio.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Adapter sem filtro: no menu "exposed dropdown" o ArrayAdapter comum passa a mostrar
-     * só o item selecionado depois da primeira escolha. Este adapter sempre lista tudo.
-     */
     private static class DropdownAdapter extends ArrayAdapter<String> {
-
         private final List<String> itens;
 
         DropdownAdapter(Context context, List<String> itens) {
