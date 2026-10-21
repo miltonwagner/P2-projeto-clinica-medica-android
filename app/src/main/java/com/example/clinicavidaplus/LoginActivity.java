@@ -23,9 +23,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGIN_DEBUG";
+
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    private EditText editEmail, editSenha;
+    private EditText editEmail;
+    private EditText editSenha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,90 +35,163 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-        editEmail = findViewById(R.id.editEmailLogin);
-        editSenha = findViewById(R.id.editSenhaLogin);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+        editEmail = findViewById(R.id.edtEmail);
+        editSenha = findViewById(R.id.edtSenha);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(
+                        getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> finish());
+        findViewById(R.id.txtEsqueceuSenha).setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    EsqueceuSenhaActivity.class
+            );
+            startActivity(intent);
+        });
+
+        findViewById(R.id.txtCadastro).setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    MainActivity.class
+            );
+            startActivity(intent);
+        });
 
         findViewById(R.id.btnEntrar).setOnClickListener(v -> {
+
             String email = editEmail.getText().toString().trim();
             String senha = editSenha.getText().toString().trim();
 
-            if (email.isEmpty()) { editEmail.setError("Informe o e-mail"); return; }
-            if (senha.isEmpty()) { editSenha.setError("Informe a senha"); return; }
+            if (email.isEmpty()) {
+                editEmail.setError("Informe o e-mail");
+                editEmail.requestFocus();
+                return;
+            }
+
+            if (senha.isEmpty()) {
+                editSenha.setError("Informe a senha");
+                editSenha.requestFocus();
+                return;
+            }
 
             mAuth.signInWithEmailAndPassword(email, senha)
                     .addOnCompleteListener(this, task -> {
+
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "Login e-mail OK");
+                            Log.d(TAG, "Login por e-mail realizado.");
                             irParaConsultas();
                         } else {
                             String erro = task.getException() != null
-                                    ? task.getException().getMessage() : "Erro desconhecido";
-                            Toast.makeText(this, "Erro: " + erro, Toast.LENGTH_LONG).show();
+                                    ? task.getException().getMessage()
+                                    : "Erro desconhecido";
+
+                            Toast.makeText(
+                                    this,
+                                    "Não foi possível entrar: " + erro,
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
                     });
         });
 
         findViewById(R.id.btnGoogle).setOnClickListener(v -> {
-            Log.d(TAG, "Clicou Google - lançando intent");
-            googleLauncher.launch(mGoogleSignInClient.getSignInIntent());
+            Log.d(TAG, "Iniciando login com Google.");
+            googleLauncher.launch(
+                    mGoogleSignInClient.getSignInIntent()
+            );
         });
     }
 
-
     private void irParaConsultas() {
         Intent intent = new Intent(this, ConsultasActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
         startActivity(intent);
         finish();
     }
 
-    private final ActivityResultLauncher<Intent> googleLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                Log.d(TAG, "Retorno Google - resultCode: " + result.getResultCode());
+    private final ActivityResultLauncher<Intent> googleLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
 
-                if (result.getData() == null) {
-                    Log.e(TAG, "getData() nulo");
-                    Toast.makeText(this, "Erro: resposta nula do Google", Toast.LENGTH_LONG).show();
-                    return;
-                }
+                        Log.d(TAG, "Retorno do login Google: "
+                                + result.getResultCode());
 
-                Task<GoogleSignInAccount> task =
-                        GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        if (result.getData() == null) {
+                            Toast.makeText(
+                                    this,
+                                    "Não foi possível obter a resposta do Google.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            return;
+                        }
 
-                try {
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    String idToken = account.getIdToken();
-                    Log.d(TAG, "Token obtido, autenticando no Firebase...");
+                        Task<GoogleSignInAccount> task =
+                                GoogleSignIn.getSignedInAccountFromIntent(
+                                        result.getData()
+                                );
 
-                    AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+                        try {
+                            GoogleSignInAccount account =
+                                    task.getResult(ApiException.class);
 
-                    mAuth.signInWithCredential(credential)
-                            .addOnCompleteListener(this, authTask -> {
-                                if (authTask.isSuccessful()) {
-                                    Log.d(TAG, "Firebase auth OK!");
-                                    irParaConsultas();
-                                } else {
-                                    String erro = authTask.getException() != null
-                                            ? authTask.getException().getMessage() : "Erro desconhecido";
-                                    Log.e(TAG, "Erro Firebase: " + erro);
-                                    Toast.makeText(this, "Erro Firebase: " + erro, Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            String idToken = account.getIdToken();
 
-                } catch (ApiException e) {
-                    Log.e(TAG, "ApiException código: " + e.getStatusCode());
-                    Toast.makeText(this, "Erro Google código " + e.getStatusCode(), Toast.LENGTH_LONG).show();
-                }
-            });
+                            if (idToken == null) {
+                                Toast.makeText(
+                                        this,
+                                        "Não foi possível obter o token do Google.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                                return;
+                            }
+
+                            AuthCredential credential =
+                                    GoogleAuthProvider.getCredential(idToken, null);
+
+                            mAuth.signInWithCredential(credential)
+                                    .addOnCompleteListener(this, authTask -> {
+
+                                        if (authTask.isSuccessful()) {
+                                            Log.d(TAG, "Login Google/Firebase OK.");
+                                            irParaConsultas();
+                                        } else {
+                                            String erro =
+                                                    authTask.getException() != null
+                                                            ? authTask.getException().getMessage()
+                                                            : "Erro desconhecido";
+
+                                            Log.e(TAG, "Erro Firebase: " + erro);
+
+                                            Toast.makeText(
+                                                    this,
+                                                    "Falha no login Google: " + erro,
+                                                    Toast.LENGTH_LONG
+                                            ).show();
+                                        }
+                                    });
+
+                        } catch (ApiException e) {
+                            Log.e(TAG, "Erro no login Google: "
+                                    + e.getStatusCode(), e);
+
+                            Toast.makeText(
+                                    this,
+                                    "Falha no login Google. Código: "
+                                            + e.getStatusCode(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+            );
 }
