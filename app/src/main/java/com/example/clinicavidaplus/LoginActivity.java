@@ -33,6 +33,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Botão Voltar para a tela inicial
+        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
