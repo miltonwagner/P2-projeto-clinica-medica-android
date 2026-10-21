@@ -38,4 +38,14 @@
     <string name="dialogo_btn_sim">Sim</string>
     <string name="dialogo_btn_nao">Não</string>
 
+    <string name="app_titulo">Clínica Saúde e Cidadania</string>
+    <string name="app_subtitulo">Agende sua consulta com facilidade</string>
+    <string name="logo_descricao">Logo da clínica</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_cadastro">Cadastro</string>
+    <string name="btn_localizacao">Nossa localização</string>
+    <string name="separador_ou">ou</string>
+    <string name="rodape_endereco">R. Bernardino de Campos, 933 - Centro, Indaiatuba - SP</string>
+    <string name="rodape_copy">© 2026 Clínica Médica Vida Plus</string>
+
 </resources>

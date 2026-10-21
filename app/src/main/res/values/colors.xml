@@ -25,4 +25,11 @@
     <color name="disabled_bg">#E3EAE6</color>
     <color name="disabled_text">#9AAAA2</color>
     <color name="error">#C0392B</color>
+
+    <color name="fundo_tela">#F4F5F7</color>
+    <color name="texto_principal">#1B1B1F</color>
+    <color name="texto_secundario">#7A7F87</color>
+    <color name="roxo_botao">#6A4FA3</color>
+    <color name="roxo_claro">#EAE4F5</color>
+    <color name="azul_logo">#3B82F6</color>
 </resources>
