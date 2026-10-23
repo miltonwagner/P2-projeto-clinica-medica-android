@@ -3,102 +3,145 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F7F6">
-
-    <Button
-        android:id="@+id/btnVoltarLista"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="← VOLTAR"
-        android:layout_margin="16dp"
-        android:backgroundTint="#2E7D32"
-        android:textColor="#FFFFFF" />
+    android:background="#F4F8F5">
 
     <LinearLayout
+        android:id="@+id/headerLista"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/btnVoltarLista"
-        android:padding="16dp">
+        android:paddingStart="20dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="18dp"
+        android:background="#FFFFFF">
+
+        <Button
+            android:id="@+id/btnVoltarLista"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="&#8592; Voltar"
+            android:textAllCaps="false"
+            android:textColor="#246B45"
+            android:backgroundTint="#E7F2EA"
+            android:elevation="0dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Último Agendamento"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginTop="14dp"
+            android:text="Minhas Consultas"
+            android:textColor="#174D35"
+            android:textSize="27sp"
+            android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#1d8f8a"
-            app:cardCornerRadius="15dp">
+            android:layout_marginTop="5dp"
+            android:text="Acompanhe seus agendamentos."
+            android:textColor="#66766C"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollListaConsultas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerLista"
+        android:layout_above="@id/rodapeLista"
+        android:fillViewport="true"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SEUS AGENDAMENTOS"
+                android:textColor="#47745A"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
             <LinearLayout
+                android:id="@+id/containerConsultas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/layoutSemConsultas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:gravity="center"
+                android:padding="28dp"
+                android:layout_marginTop="8dp"
+                android:background="#FFFFFF"
+                android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/txtResumoMedico"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Médico: ---"
-                    android:textColor="#FFFFFF"
+                    android:text="&#10003;"
+                    android:textColor="#2E7D32"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="Nenhuma consulta encontrada"
+                    android:textColor="#174D35"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtResumoEspecialidade"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Especialidade: ---"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginTop="8dp" />
-
-                <TextView
-                    android:id="@+id/txtResumoDataHora"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Data e Hora: ---"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginTop="8dp" />
-
-                <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#55FFFFFF"
-                    android:layout_marginVertical="10dp"/>
-
-                <TextView
-                    android:id="@+id/txtDiagnostico"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Diagnóstico: Aguardando avaliação médica"
-                    android:textColor="#FFEB3B"
-                    android:textStyle="italic" />
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Seus agendamentos aparecerão aqui."
+                    android:textColor="#66766C"
+                    android:textSize="14sp" />
+
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/rodapeLista"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="#212529">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clínica VidaPlus - Unidade Indaiatuba"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="#FFFFFF">
+
+        <Button
+            android:id="@+id/btnNovoAgendamento"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="+ Novo agendamento"
+            android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:textSize="12sp" />
-    </LinearLayout>
-</RelativeLayout>
+            android:backgroundTint="#2E7D32" />
 
+    </LinearLayout>
+
+</RelativeLayout>

@@ -3,83 +3,173 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#F4F8F5">
 
     <Button
         android:id="@+id/btnVoltar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="← VOLTAR"
-        android:backgroundTint="#2E7D32"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp" />
+        android:layout_height="44dp"
+        android:text="&#8592; Voltar"
+        android:textAllCaps="false"
+        android:textColor="#246B43"
+        android:textSize="14sp"
+        android:backgroundTint="#E2EFE6" />
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_below="@id/btnVoltar"
-        android:layout_marginTop="10dp">
-
-        <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="150dp"
-            android:layout_height="100dp"
-            android:src="@drawable/logomed"
-            android:scaleType="fitCenter" />
+        android:layout_marginTop="14dp"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Novo Agendamento"
-            android:textSize="22sp"
-            android:textColor="#2E7D32"
+            android:text="Agendar consulta"
+            android:textSize="26sp"
+            android:textColor="#205C35"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Escolha a especialidade, o médico e o melhor horário para você."
+            android:textSize="14sp"
+            android:textColor="#617267" />
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollAgendamento"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/header"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="16dp"
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="3dp"
+            android:padding="18dp">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Especialidade e Médico:" android:textStyle="bold" android:layout_marginTop="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="01  Especialidade"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#245A38"
+                android:layout_marginBottom="6dp" />
 
-            <Spinner android:id="@+id/spinnerEspecialidades" android:layout_width="match_parent"
-                android:layout_height="55dp" android:entries="@array/especialidades_array" />
+            <Spinner
+                android:id="@+id/spinnerEspecialidades"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:entries="@array/especialidades_array"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:backgroundTint="#B7CDBD" />
 
-            <Spinner android:id="@+id/spinnerMedicos" android:layout_width="match_parent"
-                android:layout_height="55dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="02  Médico"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#245A38"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="6dp" />
 
-            <Button android:id="@+id/btnSelecionarData" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:layout_marginTop="15dp"
-                android:text="Escolher Data" android:backgroundTint="#E8F5E9" android:textColor="#000000"/>
+            <Spinner
+                android:id="@+id/spinnerMedicos"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:backgroundTint="#B7CDBD" />
 
-            <TextView android:id="@+id/txtDataSelecionada" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:gravity="center" android:text="Data não selecionada"
-                android:padding="5dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:background="#E7EEE9" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Selecione o Horário:" android:textStyle="bold" android:layout_marginTop="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="03  Data da consulta"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#245A38"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
 
-            <GridLayout android:id="@+id/gridHorarios" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:columnCount="3" android:layout_marginTop="10dp"
-                android:alignmentMode="alignMargins" />
+            <Button
+                android:id="@+id/btnSelecionarData"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Escolher data"
+                android:textAllCaps="false"
+                android:textColor="#205C35"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:backgroundTint="#E3F2E5" />
 
-            <Button android:id="@+id/btnConfirmarAgendamento" android:layout_width="match_parent"
-                android:layout_height="65dp" android:layout_marginTop="25dp"
-                android:text="CONFIRMAR AGENDAMENTO" android:backgroundTint="#2E7D32" android:textColor="#FFFFFF"
-                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/txtDataSelecionada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Data não selecionada"
+                android:textColor="#526657"
+                android:textSize="14sp"
+                android:padding="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:background="#E7EEE9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="04  Horários disponíveis"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#245A38"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <GridLayout
+                android:id="@+id/gridHorarios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true" />
+
+            <Button
+                android:id="@+id/btnConfirmarAgendamento"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="Confirmar agendamento"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:backgroundTint="#287746" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
-
-

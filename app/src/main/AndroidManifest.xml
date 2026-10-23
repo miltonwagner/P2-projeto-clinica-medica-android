@@ -22,5 +22,7 @@
     <activity android:name=".ListaConsultasActivity" android:exported="false" />
     <!-- Consultas -->
     <activity android:name=".ConsultasActivity" android:exported="false" />
+    <activity android:name=".RevisaoAgendamentoActivity" android:exported="false" />
+    <activity android:name=".AgendamentoSucessoActivity" android:exported="false" />
   </application>
 </manifest>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F7F4"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="28dp">
+
+        <Button
+            android:id="@+id/btnVoltarRevisao"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:minHeight="0dp"
+            android:text="← Voltar"
+            android:textAllCaps="false"
+            android:textColor="#205C35"
+            android:backgroundTint="#E2EEE5"
+            android:elevation="0dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="CONFIRMAÇÃO DO AGENDAMENTO"
+            android:textAlignment="center"
+            android:textColor="#36805A"
+            android:textSize="12sp"
+            android:letterSpacing="0.08"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Confirme sua consulta"
+            android:textAlignment="center"
+            android:textColor="#174D35"
+            android:textSize="27sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Confira os dados abaixo antes de finalizar o agendamento."
+            android:textAlignment="center"
+            android:textColor="#66766C"
+            android:textSize="15sp"
+            android:lineSpacingExtra="3dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="#FFFFFF"
+            android:elevation="3dp"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RESUMO DA CONSULTA"
+                android:textColor="#36805A"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="42dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="10dp"
+                android:background="#55A875" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="ESPECIALIDADE"
+                android:textColor="#78877D"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRevisaoEspecialidade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#244C32"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="17dp"
+                android:background="#E8EEE9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:text="MÉDICO"
+                android:textColor="#78877D"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRevisaoMedico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#244C32"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="17dp"
+                android:background="#E8EEE9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:text="DATA DA CONSULTA"
+                android:textColor="#78877D"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRevisaoData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#244C32"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="17dp"
+                android:background="#E8EEE9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                android:text="HORÁRIO"
+                android:textColor="#78877D"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRevisaoHorario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#244C32"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:text="Verifique os dados antes de confirmar."
+            android:textColor="#66766C"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnConfirmarRevisao"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="14dp"
+            android:backgroundTint="#287847"
+            android:text="CONFIRMAR AGENDAMENTO"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

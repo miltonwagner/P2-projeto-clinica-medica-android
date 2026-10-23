@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -48,7 +50,12 @@ public class ConsultasActivity extends AppCompatActivity {
             adapterMed.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerMedicos.setAdapter(adapterMed);
 
-            findViewById(R.id.btnVoltar).setOnClickListener(v -> finish());
+            findViewById(R.id.btnVoltar).setOnClickListener(v -> {
+                Intent intent = new Intent(ConsultasActivity.this, IndexActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            });
 
             findViewById(R.id.btnSelecionarData).setOnClickListener(v -> {
                 Calendar c = Calendar.getInstance();
@@ -59,7 +66,7 @@ public class ConsultasActivity extends AppCompatActivity {
                 }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
             });
 
-            findViewById(R.id.btnConfirmarAgendamento).setOnClickListener(v -> salvarAgendamento());
+            findViewById(R.id.btnConfirmarAgendamento).setOnClickListener(v -> abrirRevisaoAgendamento());
 
         } catch (Exception e) {
             Log.e("CONSULTAS_ERRO", "Erro crítico: " + e.getMessage());
@@ -200,5 +207,26 @@ public class ConsultasActivity extends AppCompatActivity {
         }).addOnFailureListener(e ->
                 Toast.makeText(this, "Erro ao agendar: " + e.getMessage(), Toast.LENGTH_SHORT).show()
         );
+    }
+    private void abrirRevisaoAgendamento() {
+        String medico = spinnerMedicos.getSelectedItem() == null
+                ? "" : spinnerMedicos.getSelectedItem().toString();
+        String especialidade = spinnerEspecialidades.getSelectedItem() == null
+                ? "" : spinnerEspecialidades.getSelectedItem().toString();
+
+        if (medico.isEmpty() || medico.equals("Selecione o Médico") ||
+                especialidade.isEmpty() || dataF.isEmpty() || horaF.isEmpty()) {
+            Toast.makeText(this,
+                    "Selecione especialidade, médico, data e horário.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Intent intent = new Intent(this, RevisaoAgendamentoActivity.class);
+        intent.putExtra("medico", medico);
+        intent.putExtra("especialidade", especialidade);
+        intent.putExtra("data", dataF);
+        intent.putExtra("horario", horaF);
+        startActivity(intent);
     }
 }
