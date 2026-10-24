@@ -1,10 +1,14 @@
+
 package com.example.clinicavidaplus;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editEmail;
     private EditText editTelefone;
     private EditText editNascimento;
+    private ImageButton btnCalendarioNascimento;
     private EditText editSenha;
 
     private Button btnCadastrar;
@@ -31,31 +39,27 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
+    private boolean alterandoDataNascimento = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicializa os serviços do Firebase.
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Localiza os componentes da tela.
         inicializarComponentes();
+        configurarMascaraDataNascimento();
 
-        // Encerra uma sessão anterior para iniciar um novo cadastro.
         auth.signOut();
 
-        // Retorna à tela anterior.
         btnVoltar.setOnClickListener(v -> finish());
 
-        // Abre o calendário para selecionar a data de nascimento.
-        editNascimento.setFocusable(false);
-        editNascimento.setClickable(true);
+        btnCalendarioNascimento.setOnClickListener(
+                v -> abrirCalendario()
+        );
 
-        editNascimento.setOnClickListener(v -> abrirCalendario());
-
-        // Executa o cadastro do paciente.
         btnCadastrar.setOnClickListener(v -> {
             String nome = editNome.getText().toString().trim();
             String email = editEmail.getText().toString().trim();
@@ -82,10 +86,72 @@ public class MainActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.editEmailCadastro);
         editTelefone = findViewById(R.id.editTelefoneCadastro);
         editNascimento = findViewById(R.id.editNascimentoCadastro);
+        btnCalendarioNascimento = findViewById(R.id.btnCalendarioNascimento);
         editSenha = findViewById(R.id.editSenhaCadastro);
 
         btnCadastrar = findViewById(R.id.btnCadastrar);
         btnVoltar = findViewById(R.id.btnVoltarCadastro);
+    }
+
+    private void configurarMascaraDataNascimento() {
+        editNascimento.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(
+                    CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(
+                    CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (alterandoDataNascimento) {
+                    return;
+                }
+
+                alterandoDataNascimento = true;
+
+                String numeros = s.toString().replaceAll("[^0-9]", "");
+
+                if (numeros.length() > 8) {
+                    numeros = numeros.substring(0, 8);
+                }
+
+                StringBuilder dataFormatada = new StringBuilder();
+
+                if (numeros.length() > 0) {
+                    dataFormatada.append(
+                            numeros.substring(0, Math.min(2, numeros.length()))
+                    );
+                }
+
+                if (numeros.length() > 2) {
+                    dataFormatada.append("/");
+                    dataFormatada.append(
+                            numeros.substring(2, Math.min(4, numeros.length()))
+                    );
+                }
+
+                if (numeros.length() > 4) {
+                    dataFormatada.append("/");
+                    dataFormatada.append(
+                            numeros.substring(4, Math.min(8, numeros.length()))
+                    );
+                }
+
+                String resultado = dataFormatada.toString();
+
+                if (!resultado.equals(s.toString())) {
+                    editNascimento.setText(resultado);
+                    editNascimento.setSelection(resultado.length());
+                }
+
+                alterandoDataNascimento = false;
+            }
+        });
     }
 
     private void abrirCalendario() {
@@ -95,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 (view, ano, mes, dia) -> {
                     String data = String.format(
-                            Locale.getDefault(),
+                            Locale.ROOT,
                             "%02d/%02d/%04d",
                             dia,
                             mes + 1,
@@ -110,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
                 calendario.get(Calendar.DAY_OF_MONTH)
         );
 
-        // Impede a seleção de uma data futura.
         seletorData.getDatePicker().setMaxDate(
                 System.currentTimeMillis()
         );
@@ -126,50 +191,89 @@ public class MainActivity extends AppCompatActivity {
             String senha
     ) {
         if (nome.isEmpty()) {
-            editNome.setError("O nome é obrigatório");
+            editNome.setError("O nome e obrigatorio");
             editNome.requestFocus();
             return false;
         }
 
         if (email.isEmpty()) {
-            editEmail.setError("O e-mail é obrigatório");
+            editEmail.setError("O e-mail e obrigatorio");
             editEmail.requestFocus();
             return false;
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editEmail.setError("Informe um e-mail válido");
+            editEmail.setError("Informe um e-mail valido");
             editEmail.requestFocus();
             return false;
         }
 
         if (telefone.isEmpty()) {
-            editTelefone.setError("O telefone é obrigatório");
+            editTelefone.setError("O telefone e obrigatorio");
             editTelefone.requestFocus();
             return false;
         }
 
         if (nascimento.isEmpty()) {
-            editNascimento.setError("A data de nascimento é obrigatória");
+            editNascimento.setError("A data de nascimento e obrigatoria");
+            editNascimento.requestFocus();
+            return false;
+        }
+
+        if (!validarDataNascimento(nascimento)) {
+            editNascimento.setError(
+                    "Informe uma data valida, anterior ou igual a hoje"
+            );
             editNascimento.requestFocus();
             return false;
         }
 
         if (senha.isEmpty()) {
-            editSenha.setError("A senha é obrigatória");
+            editSenha.setError("A senha e obrigatoria");
             editSenha.requestFocus();
             return false;
         }
 
         if (senha.length() < 6) {
-            editSenha.setError(
-                    "A senha deve ter no mínimo 6 caracteres"
-            );
+            editSenha.setError("A senha deve ter no minimo 6 caracteres");
             editSenha.requestFocus();
             return false;
         }
 
         return true;
+    }
+
+    private boolean validarDataNascimento(String nascimento) {
+        if (!nascimento.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            return false;
+        }
+
+        SimpleDateFormat formato =
+                new SimpleDateFormat("dd/MM/yyyy", Locale.ROOT);
+        formato.setLenient(false);
+
+        ParsePosition posicao = new ParsePosition(0);
+        Date data = formato.parse(nascimento, posicao);
+
+        if (data == null || posicao.getIndex() != nascimento.length()) {
+            return false;
+        }
+
+        Calendar dataInformada = Calendar.getInstance();
+        dataInformada.setTime(data);
+        zerarHorario(dataInformada);
+
+        Calendar hoje = Calendar.getInstance();
+        zerarHorario(hoje);
+
+        return !dataInformada.after(hoje);
+    }
+
+    private void zerarHorario(Calendar calendario) {
+        calendario.set(Calendar.HOUR_OF_DAY, 0);
+        calendario.set(Calendar.MINUTE, 0);
+        calendario.set(Calendar.SECOND, 0);
+        calendario.set(Calendar.MILLISECOND, 0);
     }
 
     private void cadastrarNovoPaciente(
@@ -189,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Toast.makeText(
                                     MainActivity.this,
-                                    "Usuário criado, mas não foi possível obter sua sessão.",
+                                    "Usuario criado, mas nao foi possivel obter a sessao.",
                                     Toast.LENGTH_LONG
                             ).show();
 
@@ -208,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
                                 .document(uid)
                                 .set(paciente)
                                 .addOnSuccessListener(resultado -> {
-
                                     Toast.makeText(
                                             MainActivity.this,
                                             "Paciente cadastrado com sucesso!",
@@ -218,12 +321,11 @@ public class MainActivity extends AppCompatActivity {
                                     abrirLogin();
                                 })
                                 .addOnFailureListener(erro -> {
-
                                     btnCadastrar.setEnabled(true);
 
                                     Toast.makeText(
                                             MainActivity.this,
-                                            "A conta foi criada, mas houve falha ao salvar os dados no Firestore: "
+                                            "Conta criada, mas houve falha ao salvar os dados: "
                                                     + erro.getLocalizedMessage(),
                                             Toast.LENGTH_LONG
                                     ).show();
