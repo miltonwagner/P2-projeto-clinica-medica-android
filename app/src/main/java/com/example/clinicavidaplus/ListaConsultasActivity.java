@@ -1,4 +1,3 @@
-
 package com.example.clinicavidaplus;
 
 import android.content.Intent;

@@ -33,9 +33,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Botão Voltar para a tela inicial
         findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, IndexActivity.class);
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    IndexActivity.class
+            );
             startActivity(intent);
             finish();
         });
@@ -46,9 +50,11 @@ public class LoginActivity extends AppCompatActivity {
         editSenha = findViewById(R.id.edtSenha);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
-                GoogleSignInOptions.DEFAULT_SIGN_IN)
+                GoogleSignInOptions.DEFAULT_SIGN_IN
+        )
                 .requestIdToken(
-                        getString(R.string.default_web_client_id))
+                        getString(R.string.default_web_client_id)
+                )
                 .requestEmail()
                 .build();
 
@@ -70,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Login com e-mail e senha
         findViewById(R.id.btnEntrar).setOnClickListener(v -> {
 
             String email = editEmail.getText().toString().trim();
@@ -107,20 +114,32 @@ public class LoginActivity extends AppCompatActivity {
                     });
         });
 
+        // Login com Google
         findViewById(R.id.btnGoogle).setOnClickListener(v -> {
             Log.d(TAG, "Iniciando login com Google.");
+
             googleLauncher.launch(
                     mGoogleSignInClient.getSignInIntent()
             );
         });
     }
 
+    /**
+     * Direciona o usuário autenticado para Minhas Consultas.
+     * Este método é utilizado tanto pelo login convencional
+     * quanto pelo login com Google.
+     */
     private void irParaConsultas() {
-        Intent intent = new Intent(this, ConsultasActivity.class);
+        Intent intent = new Intent(
+                this,
+                ListaConsultasActivity.class
+        );
+
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
         );
+
         startActivity(intent);
         finish();
     }
@@ -130,8 +149,11 @@ public class LoginActivity extends AppCompatActivity {
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
 
-                        Log.d(TAG, "Retorno do login Google: "
-                                + result.getResultCode());
+                        Log.d(
+                                TAG,
+                                "Retorno do login Google: "
+                                        + result.getResultCode()
+                        );
 
                         if (result.getData() == null) {
                             Toast.makeText(
@@ -163,21 +185,33 @@ public class LoginActivity extends AppCompatActivity {
                             }
 
                             AuthCredential credential =
-                                    GoogleAuthProvider.getCredential(idToken, null);
+                                    GoogleAuthProvider.getCredential(
+                                            idToken,
+                                            null
+                                    );
 
                             mAuth.signInWithCredential(credential)
                                     .addOnCompleteListener(this, authTask -> {
 
                                         if (authTask.isSuccessful()) {
-                                            Log.d(TAG, "Login Google/Firebase OK.");
+                                            Log.d(
+                                                    TAG,
+                                                    "Login Google/Firebase OK."
+                                            );
+
                                             irParaConsultas();
+
                                         } else {
                                             String erro =
                                                     authTask.getException() != null
-                                                            ? authTask.getException().getMessage()
+                                                            ? authTask.getException()
+                                                            .getMessage()
                                                             : "Erro desconhecido";
 
-                                            Log.e(TAG, "Erro Firebase: " + erro);
+                                            Log.e(
+                                                    TAG,
+                                                    "Erro Firebase: " + erro
+                                            );
 
                                             Toast.makeText(
                                                     this,
@@ -188,8 +222,12 @@ public class LoginActivity extends AppCompatActivity {
                                     });
 
                         } catch (ApiException e) {
-                            Log.e(TAG, "Erro no login Google: "
-                                    + e.getStatusCode(), e);
+                            Log.e(
+                                    TAG,
+                                    "Erro no login Google: "
+                                            + e.getStatusCode(),
+                                    e
+                            );
 
                             Toast.makeText(
                                     this,
