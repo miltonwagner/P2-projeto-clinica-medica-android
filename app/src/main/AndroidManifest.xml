@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.clinicavidaplus">
-  <!-- Permite a comunicaÃƒÂ§ÃƒÂ£o com o Firebase pela internet -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.clinicavidaplus">
+
   <uses-permission android:name="android.permission.INTERNET" />
-  <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="ClinicaVidaPlus" android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-    <!-- Tela inicial do aplicativo -->
-    <activity android:name=".IndexActivity" android:exported="true">
+
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="ClinicaVidaPlus"
+      android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+    <activity
+        android:name=".IndexActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <!-- Tela de login -->
-    <activity android:name=".LoginActivity" android:exported="false"></activity>
-    <!-- RecuperaÃƒÂ§ÃƒÂ£o de senha -->
-    <activity android:name=".EsqueceuSenhaActivity" android:exported="false" />
-    <!-- Cadastro de usuÃƒÂ¡rio -->
-    <activity android:name=".MainActivity" android:exported="false" />
-    <!-- EndereÃƒÂ§o -->
-    <activity android:name=".EnderecoActivity" android:exported="false" />
-    <!-- Lista de consultas -->
-    <activity android:name=".ListaConsultasActivity" android:exported="false" />
-    <!-- Consultas -->
-    <activity android:name=".ConsultasActivity" android:exported="false" />
-    <activity android:name=".RevisaoAgendamentoActivity" android:exported="false" />
-    <activity android:name=".AgendamentoSucessoActivity" android:exported="false" />
+
+    <activity
+        android:name=".LoginActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".EsqueceuSenhaActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".MainActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".EnderecoActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".ListaConsultasActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".ConsultasActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".RevisaoAgendamentoActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".AgendamentoSucessoActivity"
+        android:exported="false" />
+
+    <activity
+        android:name=".AdminMedicosActivity"
+        android:exported="false" />
+
   </application>
 </manifest>
