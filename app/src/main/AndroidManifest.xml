@@ -40,6 +40,10 @@
         android:exported="false" />
 
     <activity
+        android:name=".ListaConsultasMedicoActivity"
+        android:exported="false" />
+
+    <activity
         android:name=".ConsultasActivity"
         android:exported="false" />
 

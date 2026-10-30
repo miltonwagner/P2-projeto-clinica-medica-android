@@ -1,3 +1,4 @@
+
 package com.example.clinicavidaplus;
 
 import android.content.Intent;
@@ -16,16 +17,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LOGIN_DEBUG";
 
+    // Deve ser exatamente a mesma chave utilizada na MainActivity.
+    private static final String EXTRA_COMPLETAR_CADASTRO_GOOGLE =
+            "com.example.clinicavidaplus.COMPLETAR_CADASTRO_GOOGLE";
+
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     private EditText editEmail;
     private EditText editSenha;
 
@@ -34,20 +45,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Botão Voltar para a tela inicial
-        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    LoginActivity.this,
-                    IndexActivity.class
-            );
-            startActivity(intent);
-            finish();
-        });
-
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         editEmail = findViewById(R.id.edtEmail);
         editSenha = findViewById(R.id.edtSenha);
+
+        configurarLoginGoogle();
+        configurarBotoes();
+
+    }
+
+    private void configurarLoginGoogle() {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN
@@ -59,12 +68,26 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+    }
+
+    private void configurarBotoes() {
+
+        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    IndexActivity.class
+            );
+
+            startActivity(intent);
+            finish();
+        });
 
         findViewById(R.id.txtEsqueceuSenha).setOnClickListener(v -> {
             Intent intent = new Intent(
                     LoginActivity.this,
                     EsqueceuSenhaActivity.class
             );
+
             startActivity(intent);
         });
 
@@ -73,10 +96,11 @@ public class LoginActivity extends AppCompatActivity {
                     LoginActivity.this,
                     MainActivity.class
             );
+
             startActivity(intent);
         });
 
-        // Login com e-mail e senha
+        // Login com e-mail e senha.
         findViewById(R.id.btnEntrar).setOnClickListener(v -> {
 
             String email = editEmail.getText().toString().trim();
@@ -99,8 +123,11 @@ public class LoginActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Login por e-mail realizado.");
-                            irParaConsultas();
+
+                            verificarPerfilEEncaminhar();
+
                         } else {
+
                             String erro = task.getException() != null
                                     ? task.getException().getMessage()
                                     : "Erro desconhecido";
@@ -114,8 +141,9 @@ public class LoginActivity extends AppCompatActivity {
                     });
         });
 
-        // Login com Google
+        // Login com Google.
         findViewById(R.id.btnGoogle).setOnClickListener(v -> {
+
             Log.d(TAG, "Iniciando login com Google.");
 
             googleLauncher.launch(
@@ -125,14 +153,189 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Direciona o usuário autenticado para Minhas Consultas.
-     * Este método é utilizado tanto pelo login convencional
-     * quanto pelo login com Google.
+     * Verifica a credencial administrativa e depois consulta
+     * os documentos de médico e paciente.
      */
-    private void irParaConsultas() {
+    private void verificarPerfilEEncaminhar() {
+
+        FirebaseUser usuario = mAuth.getCurrentUser();
+
+        if (usuario == null) {
+            Toast.makeText(
+                    this,
+                    "Não foi possível identificar o usuário.",
+                    Toast.LENGTH_LONG
+            ).show();
+            return;
+        }
+
+        // Atualiza o token para consultar as credenciais mais recentes.
+        usuario.getIdToken(true)
+                .addOnSuccessListener(resultado -> {
+
+                    Object permissaoAdmin =
+                            resultado.getClaims().get("admin");
+
+                    if (Boolean.TRUE.equals(permissaoAdmin)) {
+
+                        Log.d(TAG, "Perfil administrativo identificado.");
+
+                        abrirTela(AdminMedicosActivity.class);
+                        return;
+                    }
+
+                    verificarPerfilMedico(usuario);
+
+                })
+                .addOnFailureListener(e -> {
+
+                    Log.e(TAG, "Erro ao verificar credenciais.", e);
+
+                    Toast.makeText(
+                            this,
+                            "Não foi possível verificar seu perfil.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private void verificarPerfilMedico(FirebaseUser usuario) {
+
+        String uid = usuario.getUid();
+
+        db.collection("medicos")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentoMedico -> {
+
+                    if (documentoMedico.exists()) {
+
+                        Boolean autorizado =
+                                documentoMedico.getBoolean("autorizado");
+
+                        if (Boolean.TRUE.equals(autorizado)) {
+
+                            Log.d(TAG, "Médico autorizado.");
+
+                            abrirTela(ListaConsultasMedicoActivity.class);
+
+                        } else {
+
+                            Toast.makeText(
+                                    this,
+                                    "Seu acesso como médico ainda não foi autorizado.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+
+                        return;
+                    }
+
+                    verificarPerfilPaciente(usuario);
+                })
+                .addOnFailureListener(e -> {
+
+                    Log.e(TAG, "Erro ao consultar perfil médico.", e);
+
+                    Toast.makeText(
+                            this,
+                            "Não foi possível consultar seu perfil médico. "
+                                    + "Verifique a conexão e as permissões do Firebase.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private void verificarPerfilPaciente(FirebaseUser usuario) {
+
+        String uid = usuario.getUid();
+
+        db.collection("pacientes")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentoPaciente -> {
+
+                    if (documentoPaciente.exists()) {
+
+                        Log.d(TAG, "Perfil de paciente identificado.");
+
+                        abrirTela(ListaConsultasActivity.class);
+
+                        return;
+                    }
+
+                    if (usuarioEntrouComGoogle(usuario)) {
+
+                        Log.d(
+                                TAG,
+                                "Usuário Google precisa completar o cadastro."
+                        );
+
+                        abrirCadastroGoogle();
+
+                    } else {
+
+                        Toast.makeText(
+                                this,
+                                "Cadastro de paciente não encontrado. "
+                                        + "Faça seu cadastro para continuar.",
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        mAuth.signOut();
+                    }
+                })
+                .addOnFailureListener(e -> {
+
+                    Log.e(TAG, "Erro ao consultar perfil do paciente.", e);
+
+                    Toast.makeText(
+                            this,
+                            "Não foi possível consultar seu cadastro.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private boolean usuarioEntrouComGoogle(FirebaseUser usuario) {
+
+        for (com.google.firebase.auth.UserInfo informacao
+                : usuario.getProviderData()) {
+
+            if ("google.com".equals(informacao.getProviderId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void abrirCadastroGoogle() {
+
         Intent intent = new Intent(
-                this,
-                ListaConsultasActivity.class
+                LoginActivity.this,
+                MainActivity.class
+        );
+
+        intent.putExtra(
+                EXTRA_COMPLETAR_CADASTRO_GOOGLE,
+                true
+        );
+
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
+        startActivity(intent);
+        finish();
+    }
+
+    private void abrirTela(Class<?> destino) {
+
+        Intent intent = new Intent(
+                LoginActivity.this,
+                destino
         );
 
         intent.setFlags(
@@ -156,11 +359,13 @@ public class LoginActivity extends AppCompatActivity {
                         );
 
                         if (result.getData() == null) {
+
                             Toast.makeText(
                                     this,
                                     "Não foi possível obter a resposta do Google.",
                                     Toast.LENGTH_LONG
                             ).show();
+
                             return;
                         }
 
@@ -170,17 +375,20 @@ public class LoginActivity extends AppCompatActivity {
                                 );
 
                         try {
+
                             GoogleSignInAccount account =
                                     task.getResult(ApiException.class);
 
                             String idToken = account.getIdToken();
 
                             if (idToken == null) {
+
                                 Toast.makeText(
                                         this,
                                         "Não foi possível obter o token do Google.",
                                         Toast.LENGTH_LONG
                                 ).show();
+
                                 return;
                             }
 
@@ -194,14 +402,16 @@ public class LoginActivity extends AppCompatActivity {
                                     .addOnCompleteListener(this, authTask -> {
 
                                         if (authTask.isSuccessful()) {
+
                                             Log.d(
                                                     TAG,
                                                     "Login Google/Firebase OK."
                                             );
 
-                                            irParaConsultas();
+                                            verificarPerfilEEncaminhar();
 
                                         } else {
+
                                             String erro =
                                                     authTask.getException() != null
                                                             ? authTask.getException()
@@ -222,10 +432,10 @@ public class LoginActivity extends AppCompatActivity {
                                     });
 
                         } catch (ApiException e) {
+
                             Log.e(
                                     TAG,
-                                    "Erro no login Google: "
-                                            + e.getStatusCode(),
+                                    "Erro no login Google: " + e.getStatusCode(),
                                     e
                             );
 

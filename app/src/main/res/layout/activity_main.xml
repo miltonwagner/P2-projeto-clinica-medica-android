@@ -130,7 +130,7 @@
                 android:layout_width="54dp"
                 android:layout_height="match_parent"
                 android:src="@android:drawable/ic_menu_my_calendar"
-                android:contentDescription="Abrir calendário de nascimento"
+                android:contentDescription="Abrir calendÃ¡rio de nascimento"
                 android:background="@android:drawable/editbox_background"
                 android:scaleType="center"
                 android:padding="12dp" />
@@ -139,6 +139,7 @@
 
         <!-- Senha -->
         <TextView
+            android:id="@+id/txtLabelSenhaCadastro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Senha"
@@ -158,7 +159,7 @@
             android:background="@android:drawable/editbox_background"
             android:layout_marginBottom="28dp" />
 
-        <!-- BotÃ£o principal -->
+        <!-- Botão principal -->
         <Button
             android:id="@+id/btnCadastrar"
             android:layout_width="match_parent"
@@ -170,7 +171,7 @@
             android:backgroundTint="#176B63"
             android:layout_marginBottom="12dp" />
 
-        <!-- BotÃ£o Voltar no final -->
+        <!-- Botão Voltar no final -->
         <Button
             android:id="@+id/btnVoltarCadastro"
             android:layout_width="match_parent"
