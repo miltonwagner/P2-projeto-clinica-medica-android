@@ -3,98 +3,179 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="#F3F7F5">
 
-    <RelativeLayout
+    <!-- Cabeçalho moderno, sem logotipo e sem botão voltar -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#1a8c7f"
-        android:padding="10dp">
-        <Button
-            android:id="@+id/btnVoltarEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="← VOLTAR"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="@android:color/transparent"
-            android:textSize="12sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#176B55"
+        android:paddingStart="24dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="26dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Localização da Clínica"
-            android:layout_centerInParent="true"
+            android:text="CLÍNICA MÉDICA VIDA PLUS"
+            android:textColor="#CBE9DC"
+            android:textSize="12sp"
+            android:letterSpacing="0.08"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Nossa localização"
             android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-    </RelativeLayout>
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Estamos prontos para receber você."
+            android:textColor="#E3F3EC"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center">
+            android:padding="20dp">
 
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/logomed"
-                android:layout_marginBottom="24dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Clínica Médica Vida Plus"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#1a8c7f" />
-
-            <TextView
+            <!-- Cartão do endereço -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rua Bernardino de Campos, 933\nCentro, Indaiatuba - SP\nCEP: 13330-010"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:layout_marginTop="16dp"
-                android:textColor="#333333" />
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="3dp"
+                android:padding="20dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Telefone: (19) 99348-4567\nE-mail: clinica@gmail.com"
-                android:gravity="center"
-                android:textSize="14sp"
-                android:layout_marginTop="12dp"
-                android:textColor="#666666" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ENDEREÇO"
+                    android:textColor="#176B55"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Rua Bernardino de Campos, 933"
+                    android:textColor="#20372E"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Centro, Indaiatuba - SP\nCEP: 13330-010"
+                    android:textColor="#5C6E64"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="4dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#E5EDE8" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="CONTATO"
+                    android:textColor="#176B55"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Telefone: (19) 99348-4567"
+                    android:textColor="#354A3F"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="E-mail: clinica@gmail.com"
+                    android:textColor="#354A3F"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <!-- Ação principal: abrir o Google Maps -->
             <Button
                 android:id="@+id/btnAbrirMaps"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_marginTop="32dp"
-                android:text="COMO CHEGAR (GOOGLE MAPS)"
-                android:backgroundTint="#4285F4"
+                android:layout_height="58dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#2878D0"
+                android:text="COMO CHEGAR"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:elevation="2dp" />
+
+            <!-- Botão voltar reposicionado abaixo de Como chegar -->
+            <Button
+                android:id="@+id/btnVoltarEnd"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#E1EEE7"
+                android:text="← Voltar"
+                android:textAllCaps="false"
+                android:textColor="#176B55"
+                android:textSize="16sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Será um prazer receber você!"
+                android:textColor="#718178"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <!-- Rodapé -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#212529"
-        android:padding="12dp"
-        android:gravity="center">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="© 2026 Clínica Médica Vida Plus"
-            android:textColor="#FFFFFF"
-            android:textSize="10sp" />
-    </LinearLayout>
+        android:background="#176B55"
+        android:gravity="center"
+        android:padding="14dp"
+        android:text="© 2026 Clínica Médica Vida Plus"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp" />
+
 </LinearLayout>

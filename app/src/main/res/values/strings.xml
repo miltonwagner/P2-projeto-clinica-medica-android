@@ -1,21 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ClinicaVidaPlus</string>
-    <string name="default_web_client_id">80375019306-avd1uo9u4nmrisl9onp0l4fom0ut7ovq.apps.googleusercontent.com</string>
-
-
-    <string-array name="especialidades_array">
-        <item>Selecione uma especialidade</item>
-        <item>Cardiologia</item>
-        <item>Pediatria</item>
-        <item>Ortopedia</item>
-        <item>Dermatologia</item>
-    </string-array>
-
-    <string-array name="medicos_array">
-        <item>Selecione um Médico</item>
-        <item>Dr. João Antonio (Cardiologia)</item>
-        <item>Dra. Maria Souza (Pediatria)</item>
-        <item>Dr. Carlos Silva (Ortopedia)</item>
-        <item>Dra. Helena Antunes (Dermatologia)</item>
-    </string-array>
+  <string name="app_name">ClinicaVidaPlus</string>
+  <string name="default_web_client_id">80375019306-avd1uo9u4nmrisl9onp0l4fom0ut7ovq.apps.googleusercontent.com</string>
+  <string-array name="especialidades_array">
+    <item>Selecione uma especialidade</item>
+    <item>Cardiologia</item>
+    <item>Pediatria</item>
+    <item>Ortopedia</item>
+    <item>Dermatologia</item>
+  </string-array>
+  <string-array name="medicos_array">
+    <item>Selecione um MÃ©dico</item>
+    <item>Dr. JoÃ£o Antonio (Cardiologia)</item>
+    <item>Dra. Maria Souza (Pediatria)</item>
+    <item>Dr. Carlos Silva (Ortopedia)</item>
+    <item>Dra. Helena Antunes (Dermatologia)</item>
+  </string-array>
+  <string name="login_titulo">Psiconnect</string>
+  <string name="login_subtitulo">Agende sua consulta com facilidade</string>
+  <string name="login_label_email">E-mail</string>
+  <string name="login_hint_email">seu@email.com</string>
+  <string name="login_label_senha">Senha</string>
+  <string name="login_hint_senha">••••••••</string>
+  <string name="login_esqueceu_senha">Esqueceu a senha?</string>
+  <string name="login_botao_entrar">Entrar</string>
+  <string name="login_ou">ou</string>
+  <string name="login_botao_google">Entrar com o Google</string>
+  <string name="login_cadastro">Não tem conta? Cadastre-se</string>
 </resources>

@@ -3,86 +3,133 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#2bbbad">
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="#1a8c7f">
+        android:minHeight="68dp"
+        android:gravity="center_vertical"
+        android:paddingStart="18dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="#FFFFFF">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/txtTituloClinica"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/btnSairApp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
             android:text="Clínica Saúde e Cidadania"
-            android:textColor="@android:color/white"
+            android:textColor="#17365D"
+            android:textSize="19sp"
             android:textStyle="bold"
-            android:layout_centerVertical="true"/>
+            android:maxLines="2"
+            android:gravity="center_vertical"/>
 
         <Button
             android:id="@+id/btnSairApp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="76dp"
+            android:layout_height="44dp"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="4dp"
             android:text="Sair"
-            android:textSize="12sp"
-            android:backgroundTint="#FF5252"
-            android:textColor="@android:color/white" />
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textColor="#B42318"
+            android:background="@drawable/bg_home_sair"
+            android:stateListAnimator="@null"/>
+
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/imgLogo"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/logomed" />
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="22dp"
+            android:background="#FFFFFF">
 
             <ImageView
                 android:id="@+id/imgFoto"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_marginTop="15dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/foto_clinica_1" />
+                android:layout_height="250dp"
+                android:layout_marginBottom="8dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="Foto da Clínica Médica Vida Plus"
+                android:src="@drawable/foto_clinica_vidaplus"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Como podemos ajudar?"
+                android:textColor="#17365D"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Acesse nossos serviços de forma simples e rápida."
+                android:textColor="#60758D"
+                android:textSize="15sp"
+                android:layout_marginBottom="18dp"/>
 
             <Button
                 android:id="@+id/btnIrLogin"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"
                 android:text="LOGIN"
-                android:layout_marginTop="25dp"
-                android:backgroundTint="#2196F3"/>
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_home_login"
+                android:stateListAnimator="@null"/>
 
             <Button
                 android:id="@+id/btnIrCadastro"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"
                 android:text="CADASTRO"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#FFFFFF"
-                android:textColor="#2bbbad"/>
+                android:textColor="#174A7E"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_home_cadastro"
+                android:stateListAnimator="@null"/>
 
             <Button
                 android:id="@+id/btnVerEndereco"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="54dp"
+                android:padding="12dp"
                 android:text="NOSSA LOCALIZAÇÃO"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#FFC107"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                android:textColor="#174A7E"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_home_localizacao"
+                android:stateListAnimator="@null"/>
+
         </LinearLayout>
     </ScrollView>
 
@@ -90,25 +137,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#212529"
-        android:padding="12dp">
+        android:gravity="center"
+        android:background="#17365D"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="R. Bernardino de Campos, 933 - Centro, Indaiatuba - SP"
-            android:textColor="@android:color/white"
+            android:textColor="#FFFFFF"
             android:gravity="center"
-            android:textSize="10sp" />
+            android:textSize="12sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="6dp"
+            android:background="#6686A8"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="© 2026 Clínica Médica Vida Plus"
-            android:textColor="#888888"
+            android:textColor="#D7E5F5"
             android:gravity="center"
-            android:textSize="9sp"
-            android:layout_marginTop="2dp" />
+            android:textSize="12sp"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F7F4"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:background="#DDEFE2"
+            android:gravity="center"
+            android:text="✓"
+            android:textColor="#287847"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="AGENDAMENTO CONCLUÍDO"
+            android:textAlignment="center"
+            android:textColor="#36805A"
+            android:textSize="12sp"
+            android:letterSpacing="0.08"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Consulta agendada!"
+            android:textAlignment="center"
+            android:textColor="#174D35"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Seu agendamento foi salvo com sucesso."
+            android:textAlignment="center"
+            android:textColor="#66766C"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="#FFFFFF"
+            android:elevation="3dp"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RESUMO DA CONSULTA"
+                android:textColor="#36805A"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="42dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="10dp"
+                android:background="#55A875" />
+
+            <TextView
+                android:id="@+id/txtSucessoResumo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="#244C32"
+                android:textSize="16sp"
+                android:lineSpacingExtra="8dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#E8F0E9"
+            android:padding="14dp"
+            android:text="O envio de e-mail está temporariamente indisponível."
+            android:textAlignment="center"
+            android:textColor="#53695A"
+            android:textSize="13sp"
+            android:lineSpacingExtra="3dp" />
+
+        <Button
+            android:id="@+id/btnVerMinhasConsultas"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#287847"
+            android:text="VER MINHAS CONSULTAS"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnNovoAgendamentoSucesso"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#DDEFE2"
+            android:text="NOVO AGENDAMENTO"
+            android:textColor="#205C35"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnVoltarSucesso"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#F3F7F4"
+            android:text="Voltar"
+            android:textColor="#205C35"
+            android:textAllCaps="false"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>
