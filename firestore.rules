@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return logado() && request.auth.token.admin == true;
+    }
+
+    function medicoAutorizado() {
+      return logado()
+        && exists(/databases/$(database)/documents/medicos/$(request.auth.uid))
+        && get(/databases/$(database)/documents/medicos/$(request.auth.uid)).data.autorizado == true;
+    }
+
+    // Paciente lê/edita o próprio cadastro; médico autorizado e admin podem ler.
+    match /pacientes/{userId} {
+      allow read: if logado() && (request.auth.uid == userId || medicoAutorizado() || admin());
+      allow create, update: if logado() && request.auth.uid == userId;
+      allow delete: if admin();
+    }
+
+    // Login consulta medicos/{uid} para definir o perfil; só admin altera.
+    match /medicos/{medicoId} {
+      allow read: if logado();
+      allow create, update, delete: if admin();
+    }
+
+    // Agenda precisa ver horários ocupados de todos os pacientes.
+    match /agendamentos/{doc} {
+      allow read, write: if logado();
+    }
+
+    match /usuarios/{userId} {
+      allow read, write: if logado() && request.auth.uid == userId;
+    }
+  }
+}
