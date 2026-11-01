@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F8F5">
+    android:background="@color/fundo"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/headerLista"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:elevation="2dp"
         android:orientation="vertical"
         android:paddingStart="20dp"
-        android:paddingTop="24dp"
+        android:paddingTop="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="8dp">
 
         <TextView
+            style="@style/Texto.Titulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Minhas Consultas"
-            android:textColor="#174D35"
-            android:textSize="27sp"
-            android:textStyle="bold" />
+            android:text="Minhas consultas" />
 
         <TextView
+            android:id="@+id/txtSaudacaoPaciente"
+            style="@style/Texto.Subtitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Acompanhe seus agendamentos."
-            android:textColor="#66766C"
-            android:textSize="14sp" />
-
+            android:layout_marginTop="4dp"
+            android:text="Acompanhe seus agendamentos." />
     </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollListaConsultas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/headerLista"
-        android:fillViewport="true"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingStart="16dp"
-        android:paddingTop="18dp"
+        android:paddingTop="8dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="20dp"
-        android:scrollbars="vertical">
+        android:paddingBottom="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="SEUS AGENDAMENTOS"
-                android:textColor="#47745A"
-                android:textSize="12sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/containerConsultas"
@@ -69,80 +54,49 @@
 
             <LinearLayout
                 android:id="@+id/layoutSemConsultas"
+                style="@style/Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="#FFFFFF"
-                android:elevation="2dp"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:padding="28dp"
                 android:visibility="gone">
 
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_nav_consultas" />
+
                 <TextView
+                    style="@style/Texto.CardTitulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="✓"
-                    android:textColor="#2E7D32"
-                    android:textSize="36sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:text="Nenhuma consulta encontrada"
-                    android:textColor="#174D35"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:text="Nenhuma consulta agendada" />
 
                 <TextView
+                    style="@style/Texto.Subtitulo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center"
-                    android:text="Seus agendamentos aparecerão aqui."
-                    android:textColor="#66766C"
-                    android:textSize="14sp" />
-
+                    android:text="Seus agendamentos aparecerão aqui." />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/rodapeLista"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingBottom="8dp">
-
-                <Button
-                    android:id="@+id/btnNovoAgendamento"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:backgroundTint="#2E7D32"
-                    android:text="+ Novo agendamento"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnVoltarLista"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="#E2EEE5"
-                    android:elevation="0dp"
-                    android:text="← Voltar"
-                    android:textAllCaps="false"
-                    android:textColor="#205C35"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
+            <Button
+                android:id="@+id/btnNovoAgendamento"
+                style="@style/Botao.Contorno"
+                android:layout_marginTop="8dp"
+                android:text="+ Novo agendamento" />
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+    <View
+        android:id="@+id/divisorNavInferior"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/borda" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navInferior"
+        style="@style/NavInferior" />
+</LinearLayout>

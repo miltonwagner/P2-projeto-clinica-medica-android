@@ -2,4 +2,24 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta padrão (protótipo Figma) -->
+    <color name="primaria">#3B82F6</color>
+    <color name="primaria_escura">#2563EB</color>
+    <color name="primaria_clara">#E4ECFD</color>
+    <color name="fundo">#F8FAFC</color>
+    <color name="superficie">#FFFFFF</color>
+    <color name="borda">#E2E8F0</color>
+    <color name="texto_escuro">#1B2130</color>
+    <color name="texto_medio">#334155</color>
+    <color name="texto_cinza">#6B7280</color>
+    <color name="texto_claro">#94A3B8</color>
+
+    <color name="sucesso">#16A34A</color>
+    <color name="sucesso_claro">#DCFCE7</color>
+    <color name="aviso">#B45309</color>
+    <color name="aviso_claro">#FEF3C7</color>
+    <color name="perigo">#DC2626</color>
+    <color name="perigo_claro">#FEE2E2</color>
+    <color name="desabilitado">#E5E7EB</color>
 </resources>

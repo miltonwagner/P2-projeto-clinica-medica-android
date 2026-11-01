@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,7 +72,15 @@ public class MainActivity extends AppCompatActivity {
             auth.signOut();
         }
 
-        btnVoltar.setOnClickListener(v -> finish());
+        btnVoltar.setOnClickListener(v -> voltar());
+
+        getOnBackPressedDispatcher().addCallback(this,
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        voltar();
+                    }
+                });
 
         btnCalendarioNascimento.setOnClickListener(
                 v -> abrirCalendario()
@@ -591,27 +600,33 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void abrirListaConsultas() {
-        Intent intent = new Intent(
-                MainActivity.this,
-                ListaConsultasActivity.class
-        );
-
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-        startActivity(intent);
-        finish();
+    /**
+     * Cadastro Google incompleto: sair desconecta a conta (senão o app
+     * voltaria sempre para esta tela). Cadastro normal: volta à tela anterior.
+     */
+    private void voltar() {
+        if (modoGoogle) {
+            Sessao.sair(this);
+        } else {
+            finish();
+        }
     }
 
+    /** Cadastro concluído: abre a área do paciente já com a sessão salva. */
+    private void abrirListaConsultas() {
+        Sessao.encaminhar(this, () -> btnCadastrar.setEnabled(true));
+    }
+
+    /** Volta ao login existente na pilha, sem duplicar telas. */
     private void abrirLogin() {
         Intent intent = new Intent(
                 MainActivity.this,
                 LoginActivity.class
         );
-
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
+        );
         startActivity(intent);
         finish();
     }

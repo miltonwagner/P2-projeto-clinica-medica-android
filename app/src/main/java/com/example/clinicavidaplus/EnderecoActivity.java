@@ -3,6 +3,7 @@ package com.example.clinicavidaplus;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,13 @@ public class EnderecoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_endereco);
 
         // Botão para voltar
-        findViewById(R.id.btnVoltarEnd).setOnClickListener(v -> finish());
+        NavegacaoInferior.configurar(this, R.id.nav_clinica);
+
+        // Com o menu inferior visível (usuário logado), o "Voltar" do topo é dispensável.
+        View btnVoltar = findViewById(R.id.btnVoltarEnd);
+        View nav = findViewById(R.id.navInferior);
+        btnVoltar.setVisibility(nav.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        btnVoltar.setOnClickListener(v -> finish());
 
         // Botão que abre o Google Maps com o endereço de Indaiatuba
         Button btnMaps = findViewById(R.id.btnAbrirMaps);

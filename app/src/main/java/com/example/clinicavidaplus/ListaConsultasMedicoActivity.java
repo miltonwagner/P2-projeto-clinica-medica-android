@@ -1,13 +1,8 @@
 
 package com.example.clinicavidaplus;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +23,6 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
     private LinearLayout containerConsultas;
     private LinearLayout layoutSemConsultas;
     private TextView txtIdentificacaoMedico;
-    private Button btnSair;
 
     private String uidMedico;
 
@@ -49,10 +43,7 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
         txtIdentificacaoMedico =
                 findViewById(R.id.txtIdentificacaoMedico);
 
-        btnSair =
-                findViewById(R.id.btnSairListaMedico);
-
-        btnSair.setOnClickListener(v -> sairDaConta());
+        NavegacaoInferior.configurar(this, R.id.nav_agenda_medico);
 
         verificarAutorizacaoMedico();
     }
@@ -148,28 +139,7 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
     }
 
     private void criarCardConsulta(DocumentSnapshot documento) {
-
-        LinearLayout card = new LinearLayout(this);
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(20, 18, 20, 18);
-
-        GradientDrawable fundo = new GradientDrawable();
-        fundo.setColor(Color.WHITE);
-        fundo.setCornerRadius(20);
-        fundo.setStroke(1, Color.rgb(220, 232, 224));
-
-        card.setBackground(fundo);
-        card.setElevation(3);
-
-        LinearLayout.LayoutParams parametros =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        parametros.setMargins(0, 0, 0, 16);
-
-        card.setLayoutParams(parametros);
+        LinearLayout card = Tela.card(this);
 
         String especialidade = obterTexto(documento, "especialidade");
         String data = obterTexto(documento, "data");
@@ -177,45 +147,22 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
         String status = obterTexto(documento, "status");
         String pacienteId = obterTexto(documento, "usuarioId");
 
-        adicionarTexto(
-                card,
-                "Consulta de " + especialidade,
-                18,
-                "#174D35",
-                true
-        );
+        card.addView(Tela.etiqueta(this, status));
 
-        TextView txtPaciente = adicionarTexto(
-                card,
+        TextView txtPaciente = Tela.texto(
+                this,
                 "Paciente: carregando...",
-                15,
-                "#334155",
-                true
+                R.style.Texto_CardTitulo,
+                10
         );
-
-        adicionarTexto(
-                card,
-                "Data: " + data,
-                14,
-                "#475569",
-                false
-        );
-
-        adicionarTexto(
-                card,
-                "Horário: " + horario,
-                14,
-                "#475569",
-                false
-        );
-
-        adicionarTexto(
-                card,
-                "Status: " + status,
-                14,
-                "#2E7D32",
-                true
-        );
+        card.addView(txtPaciente);
+        card.addView(Tela.texto(this, especialidade, R.style.Texto_Subtitulo, 2));
+        card.addView(Tela.textoComIcone(
+                this,
+                data + " às " + horario,
+                R.drawable.ic_nav_consultas,
+                12
+        ));
 
         containerConsultas.addView(card);
 
@@ -236,46 +183,13 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
                         nomePaciente = "Cadastro não localizado";
                     }
 
-                    txtPaciente.setText("Paciente: " + nomePaciente);
+                    txtPaciente.setText(nomePaciente);
                 })
                 .addOnFailureListener(e ->
                         txtPaciente.setText(
                                 "Paciente: não foi possível consultar o cadastro"
                         )
                 );
-    }
-
-    private TextView adicionarTexto(
-            LinearLayout card,
-            String texto,
-            int tamanho,
-            String cor,
-            boolean negrito
-    ) {
-
-        TextView textView = new TextView(this);
-
-        textView.setText(texto);
-        textView.setTextSize(tamanho);
-        textView.setTextColor(Color.parseColor(cor));
-
-        if (negrito) {
-            textView.setTypeface(null, Typeface.BOLD);
-        }
-
-        LinearLayout.LayoutParams parametros =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        parametros.setMargins(0, 0, 0, 9);
-
-        textView.setLayoutParams(parametros);
-
-        card.addView(textView);
-
-        return textView;
     }
 
     private String obterTexto(
@@ -289,49 +203,16 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
     }
 
     private void bloquearAcesso() {
-
         Toast.makeText(
                 this,
                 "Acesso negado. Seu cadastro médico não está autorizado.",
                 Toast.LENGTH_LONG
         ).show();
 
-        auth.signOut();
-        voltarParaLogin();
-    }
-
-    private void sairDaConta() {
-
-        auth.signOut();
-
-        Intent intent = new Intent(
-                this,
-                IndexActivity.class
-        );
-
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-        startActivity(intent);
-        finish();
+        Sessao.sair(this);
     }
 
     private void voltarParaLogin() {
-
-        Intent intent = new Intent(
-                this,
-                LoginActivity.class
-        );
-
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-        startActivity(intent);
-        finish();
+        Sessao.sair(this);
     }
 }
-

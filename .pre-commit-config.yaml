@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: android-lint
         name: Android Lint
-        entry: ./gradlew lintDebug
+        entry: sh ./gradlew lintDebug
         language: system
         pass_filenames: false
         files: \.(java|xml|kts)$

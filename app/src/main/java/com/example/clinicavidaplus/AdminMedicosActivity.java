@@ -1,13 +1,8 @@
-
 package com.example.clinicavidaplus;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,79 +36,19 @@ public class AdminMedicosActivity extends AppCompatActivity {
                     "Acesso restrito ao administrador.",
                     Toast.LENGTH_LONG
             ).show();
-            finish();
+            Sessao.sair(this);
             return;
         }
 
+        setContentView(R.layout.activity_admin_medicos);
+        NavegacaoInferior.configurar(this, R.id.nav_medicos);
+
         db = FirebaseFirestore.getInstance();
+        listaMedicos = findViewById(R.id.listaMedicos);
+        mensagem = findViewById(R.id.txtMensagemAdmin);
 
-        LinearLayout raiz = new LinearLayout(this);
-        raiz.setOrientation(LinearLayout.VERTICAL);
-        raiz.setPadding(dp(20), dp(20), dp(20), dp(20));
-        raiz.setBackgroundColor(Color.rgb(242, 248, 244));
-
-        TextView titulo = criarTexto(
-                "Administração de médicos",
-                24,
-                "#174D35",
-                true
-        );
-        raiz.addView(titulo);
-
-        TextView descricao = criarTexto(
-                "Autorize ou bloqueie o acesso à área médica.",
-                15,
-                "#526657",
-                false
-        );
-
-        LinearLayout.LayoutParams margemDescricao =
-                new LinearLayout.LayoutParams(
-                        -1, -2
-                );
-        margemDescricao.topMargin = dp(8);
-        raiz.addView(descricao, margemDescricao);
-
-        mensagem = criarTexto(
-                "Carregando médicos...",
-                15,
-                "#526657",
-                false
-        );
-
-        LinearLayout.LayoutParams margemMensagem =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemMensagem.topMargin = dp(18);
-        raiz.addView(mensagem, margemMensagem);
-
-        ScrollView rolagem = new ScrollView(this);
-        listaMedicos = new LinearLayout(this);
-        listaMedicos.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout.LayoutParams margemLista =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemLista.topMargin = dp(12);
-
-        rolagem.addView(listaMedicos);
-        raiz.addView(rolagem, new LinearLayout.LayoutParams(
-                -1, 0, 1
-        ));
-
-        Button btnAtualizar = new Button(this);
-        btnAtualizar.setText("Atualizar lista");
-        btnAtualizar.setOnClickListener(v -> carregarMedicos());
-        raiz.addView(btnAtualizar);
-
-        Button btnSair = new Button(this);
-        btnSair.setText("Sair da administração");
-        btnSair.setOnClickListener(v -> finish());
-
-        LinearLayout.LayoutParams margemSair =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemSair.topMargin = dp(8);
-        raiz.addView(btnSair, margemSair);
-
-        setContentView(raiz);
+        findViewById(R.id.btnAtualizarMedicos)
+                .setOnClickListener(v -> carregarMedicos());
 
         carregarMedicos();
     }
@@ -128,27 +63,18 @@ public class AdminMedicosActivity extends AppCompatActivity {
                     listaMedicos.removeAllViews();
 
                     if (resultado.isEmpty()) {
-                        mensagem.setText(
-                                "Nenhum médico cadastrado."
-                        );
+                        mensagem.setText("Nenhum médico cadastrado.");
                         return;
                     }
 
-                    mensagem.setText(
-                            "Médicos cadastrados: "
-                                    + resultado.size()
-                    );
+                    mensagem.setText("Médicos cadastrados: " + resultado.size());
 
-                    for (DocumentSnapshot documento
-                            : resultado.getDocuments()) {
+                    for (DocumentSnapshot documento : resultado.getDocuments()) {
                         adicionarMedico(documento);
                     }
                 })
                 .addOnFailureListener(erro -> {
-                    mensagem.setText(
-                            "Não foi possível carregar os médicos."
-                    );
-
+                    mensagem.setText("Não foi possível carregar os médicos.");
                     Toast.makeText(
                             this,
                             "Verifique as regras do Firestore.",
@@ -157,16 +83,10 @@ public class AdminMedicosActivity extends AppCompatActivity {
                 });
     }
 
-    private void adicionarMedico(
-            DocumentSnapshot documento) {
-
+    private void adicionarMedico(DocumentSnapshot documento) {
         String nome = documento.getString("nome");
         String email = documento.getString("email");
-        Boolean autorizadoCampo =
-                documento.getBoolean("autorizado");
-
-        boolean autorizado =
-                Boolean.TRUE.equals(autorizadoCampo);
+        boolean autorizado = Boolean.TRUE.equals(documento.getBoolean("autorizado"));
 
         if (nome == null || nome.trim().isEmpty()) {
             nome = "Médico sem nome";
@@ -176,63 +96,34 @@ public class AdminMedicosActivity extends AppCompatActivity {
             email = "E-mail não informado";
         }
 
-        LinearLayout cartao = new LinearLayout(this);
-        cartao.setOrientation(LinearLayout.VERTICAL);
-        cartao.setPadding(dp(16), dp(16), dp(16), dp(16));
-        cartao.setBackgroundColor(Color.WHITE);
+        LinearLayout cartao = Tela.card(this);
 
-        LinearLayout.LayoutParams parametrosCartao =
-                new LinearLayout.LayoutParams(-1, -2);
-        parametrosCartao.bottomMargin = dp(12);
-        cartao.setLayoutParams(parametrosCartao);
-
-        TextView textoNome = criarTexto(
-                nome,
-                18,
-                "#174D35",
-                true
-        );
-        cartao.addView(textoNome);
-
-        TextView textoEmail = criarTexto(
-                email,
-                14,
-                "#526657",
-                false
-        );
-
-        LinearLayout.LayoutParams margemEmail =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemEmail.topMargin = dp(6);
-        cartao.addView(textoEmail, margemEmail);
-
-        TextView textoStatus = criarTexto(
-                autorizado
-                        ? "Status: Autorizado"
-                        : "Status: Aguardando autorização",
-                15,
-                autorizado ? "#246B45" : "#996515",
-                true
-        );
-
-        LinearLayout.LayoutParams margemStatus =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemStatus.topMargin = dp(10);
-        cartao.addView(textoStatus, margemStatus);
+        cartao.addView(Tela.etiqueta(
+                this,
+                autorizado ? "Autorizado" : "Aguardando autorização"
+        ));
+        cartao.addView(Tela.texto(this, nome, R.style.Texto_CardTitulo, 10));
+        cartao.addView(Tela.texto(this, email, R.style.Texto_Subtitulo, 2));
 
         Button btnAlterar = new Button(this);
-        btnAlterar.setText(
-                autorizado ? "Bloquear acesso" : "Autorizar médico"
+        btnAlterar.setText(autorizado ? "Bloquear acesso" : "Autorizar médico");
+        btnAlterar.setAllCaps(false);
+        btnAlterar.setTextSize(14);
+        btnAlterar.setStateListAnimator(null);
+        btnAlterar.setBackgroundResource(
+                autorizado ? R.drawable.bg_botao_perigo : R.drawable.bg_botao_primario
         );
+        btnAlterar.setTextColor(getColor(autorizado ? R.color.perigo : R.color.white));
 
-        LinearLayout.LayoutParams margemBotao =
-                new LinearLayout.LayoutParams(-1, -2);
-        margemBotao.topMargin = dp(8);
+        LinearLayout.LayoutParams margemBotao = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                Tela.dp(this, 44)
+        );
+        margemBotao.topMargin = Tela.dp(this, 14);
         cartao.addView(btnAlterar, margemBotao);
 
         btnAlterar.setOnClickListener(v -> {
             btnAlterar.setEnabled(false);
-
             boolean novoEstado = !autorizado;
 
             db.collection("medicos")
@@ -246,12 +137,10 @@ public class AdminMedicosActivity extends AppCompatActivity {
                                         : "Acesso do médico bloqueado.",
                                 Toast.LENGTH_SHORT
                         ).show();
-
                         carregarMedicos();
                     })
                     .addOnFailureListener(erro -> {
                         btnAlterar.setEnabled(true);
-
                         Toast.makeText(
                                 this,
                                 "Não foi possível alterar a autorização. "
@@ -262,30 +151,5 @@ public class AdminMedicosActivity extends AppCompatActivity {
         });
 
         listaMedicos.addView(cartao);
-    }
-
-    private TextView criarTexto(
-            String texto,
-            int tamanho,
-            String cor,
-            boolean negrito) {
-
-        TextView view = new TextView(this);
-        view.setText(texto);
-        view.setTextSize(tamanho);
-        view.setTextColor(Color.parseColor(cor));
-
-        if (negrito) {
-            view.setTypeface(null, Typeface.BOLD);
-        }
-
-        return view;
-    }
-
-    private int dp(int valor) {
-        return (int) (
-                valor * getResources()
-                        .getDisplayMetrics().density
-        );
     }
 }

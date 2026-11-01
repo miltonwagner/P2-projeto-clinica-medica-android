@@ -2,196 +2,151 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F7F7"
-    android:fillViewport="true"
-    android:clipToPadding="false">
+    android:background="@color/fundo"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:orientation="vertical"
-        android:padding="24dp"
-        android:background="#FFFFFF">
+        android:paddingStart="24dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cadastro de Paciente"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="#176B63"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Preencha seus dados para criar sua conta."
-            android:textSize="14sp"
-            android:textColor="#64748B"
-            android:gravity="center"
-            android:layout_marginBottom="28dp" />
-
-        <!-- Nome -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nome completo"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#334155"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/editNomeCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="Digite seu nome completo"
-            android:inputType="textPersonName|textCapWords"
-            android:singleLine="true"
-            android:paddingHorizontal="14dp"
-            android:background="@android:drawable/editbox_background"
-            android:layout_marginBottom="18dp" />
-
-        <!-- E-mail -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="E-mail"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#334155"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/editEmailCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="exemplo@email.com"
-            android:inputType="textEmailAddress"
-            android:singleLine="true"
-            android:paddingHorizontal="14dp"
-            android:background="@android:drawable/editbox_background"
-            android:layout_marginBottom="18dp" />
-
-        <!-- Telefone -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Telefone"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#334155"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/editTelefoneCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="Digite seu telefone"
-            android:inputType="phone"
-            android:singleLine="true"
-            android:paddingHorizontal="14dp"
-            android:background="@android:drawable/editbox_background"
-            android:layout_marginBottom="18dp" />
-
-        <!-- Data de nascimento -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Data de nascimento"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#334155"
-            android:layout_marginBottom="6dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="18dp">
-
-            <EditText
-                android:id="@+id/editNascimentoCadastro"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="DD/MM/AAAA"
-                android:inputType="number"
-                android:singleLine="true"
-                android:maxLength="10"
-                android:paddingHorizontal="14dp"
-                android:background="@android:drawable/editbox_background" />
-
-            <ImageButton
-                android:id="@+id/btnCalendarioNascimento"
-                android:layout_width="54dp"
-                android:layout_height="match_parent"
-                android:src="@android:drawable/ic_menu_my_calendar"
-                android:contentDescription="Abrir calendÃ¡rio de nascimento"
-                android:background="@android:drawable/editbox_background"
-                android:scaleType="center"
-                android:padding="12dp" />
-
-        </LinearLayout>
-
-        <!-- Senha -->
-        <TextView
-            android:id="@+id/txtLabelSenhaCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Senha"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#334155"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/editSenhaCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="Crie uma senha (m&#237;n. 6 caracteres)"
-            android:inputType="textPassword"
-            android:singleLine="true"
-            android:paddingHorizontal="14dp"
-            android:background="@android:drawable/editbox_background"
-            android:layout_marginBottom="28dp" />
-
-        <!-- Botão principal -->
-        <Button
-            android:id="@+id/btnCadastrar"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:text="FINALIZAR CADASTRO"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:backgroundTint="#176B63"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Botão Voltar no final -->
         <Button
             android:id="@+id/btnVoltarCadastro"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:text="&#8592; VOLTAR"
-            android:textColor="#176B63"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:backgroundTint="#E4F1EF" />
+            style="@style/Botao.Voltar"
+            android:layout_marginStart="-4dp" />
 
         <TextView
+            style="@style/Texto.Titulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cl&#237;nica M&#233;dica Vida Plus"
-            android:textSize="12sp"
-            android:textColor="#94A3B8"
+            android:layout_marginTop="12dp"
+            android:text="Criar conta" />
+
+        <TextView
+            style="@style/Texto.Subtitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Preencha seus dados para agendar consultas." />
+
+        <LinearLayout
+            style="@style/Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                style="@style/Texto.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nome completo" />
+
+            <EditText
+                android:id="@+id/editNomeCadastro"
+                style="@style/Campo"
+                android:layout_marginTop="6dp"
+                android:autofillHints="name"
+                android:hint="Seu nome"
+                android:inputType="textPersonName|textCapWords" />
+
+            <TextView
+                style="@style/Texto.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="E-mail" />
+
+            <EditText
+                android:id="@+id/editEmailCadastro"
+                style="@style/Campo"
+                android:layout_marginTop="6dp"
+                android:autofillHints="emailAddress"
+                android:hint="seu@email.com"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                style="@style/Texto.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Telefone / WhatsApp" />
+
+            <EditText
+                android:id="@+id/editTelefoneCadastro"
+                style="@style/Campo"
+                android:layout_marginTop="6dp"
+                android:autofillHints="phone"
+                android:hint="(00) 00000-0000"
+                android:inputType="phone" />
+
+            <TextView
+                style="@style/Texto.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Data de nascimento" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editNascimentoCadastro"
+                    style="@style/Campo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="DD/MM/AAAA"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="10" />
+
+                <ImageButton
+                    android:id="@+id/btnCalendarioNascimento"
+                    android:layout_width="52dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_botao_secundario"
+                    android:contentDescription="Abrir calendário de nascimento"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_nav_consultas" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtLabelSenhaCadastro"
+                style="@style/Texto.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Senha" />
+
+            <EditText
+                android:id="@+id/editSenhaCadastro"
+                style="@style/Campo"
+                android:layout_marginTop="6dp"
+                android:autofillHints="newPassword"
+                android:hint="Mínimo 6 caracteres"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/btnCadastrar"
+                style="@style/Botao.Primario"
+                android:layout_marginTop="24dp"
+                android:text="Criar conta" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/Texto.Pequeno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp" />
-
+            android:text="@string/nome_clinica" />
     </LinearLayout>
-
 </ScrollView>

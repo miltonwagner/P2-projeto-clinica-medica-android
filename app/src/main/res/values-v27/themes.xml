@@ -1,0 +1,5 @@
+<resources>
+    <style name="Theme.ClinicaVidaPlus" parent="Base.Theme.ClinicaVidaPlus">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

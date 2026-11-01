@@ -20,9 +20,7 @@ import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,8 +28,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LOGIN_DEBUG";
 
     // Deve ser exatamente a mesma chave utilizada na MainActivity.
-    private static final String EXTRA_COMPLETAR_CADASTRO_GOOGLE =
-            "com.example.clinicavidaplus.COMPLETAR_CADASTRO_GOOGLE";
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
@@ -72,15 +68,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void configurarBotoes() {
 
-        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    LoginActivity.this,
-                    IndexActivity.class
-            );
-
-            startActivity(intent);
-            finish();
-        });
+        // Volta para a tela anterior (início), mantendo a sequência.
+        findViewById(R.id.btnVoltarLogin).setOnClickListener(v -> finish());
 
         findViewById(R.id.txtEsqueceuSenha).setOnClickListener(v -> {
             Intent intent = new Intent(
@@ -153,198 +142,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Verifica a credencial administrativa e depois consulta
-     * os documentos de médico e paciente.
+     * Identifica o perfil (admin, médico ou paciente) e abre a tela
+     * inicial correspondente. A lógica fica em {@link Sessao}, a mesma
+     * usada para manter o usuário conectado ao reabrir o app.
      */
     private void verificarPerfilEEncaminhar() {
-
-        FirebaseUser usuario = mAuth.getCurrentUser();
-
-        if (usuario == null) {
-            Toast.makeText(
-                    this,
-                    "Não foi possível identificar o usuário.",
-                    Toast.LENGTH_LONG
-            ).show();
-            return;
-        }
-
-        // Atualiza o token para consultar as credenciais mais recentes.
-        usuario.getIdToken(true)
-                .addOnSuccessListener(resultado -> {
-
-                    Object permissaoAdmin =
-                            resultado.getClaims().get("admin");
-
-                    if (Boolean.TRUE.equals(permissaoAdmin)) {
-
-                        Log.d(TAG, "Perfil administrativo identificado.");
-
-                        abrirTela(AdminMedicosActivity.class);
-                        return;
-                    }
-
-                    verificarPerfilMedico(usuario);
-
-                })
-                .addOnFailureListener(e -> {
-
-                    Log.e(TAG, "Erro ao verificar credenciais.", e);
-
-                    Toast.makeText(
-                            this,
-                            "Não foi possível verificar seu perfil.",
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
-    }
-
-    private void verificarPerfilMedico(FirebaseUser usuario) {
-
-        String uid = usuario.getUid();
-
-        db.collection("medicos")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(documentoMedico -> {
-
-                    if (documentoMedico.exists()) {
-
-                        Boolean autorizado =
-                                documentoMedico.getBoolean("autorizado");
-
-                        if (Boolean.TRUE.equals(autorizado)) {
-
-                            Log.d(TAG, "Médico autorizado.");
-
-                            abrirTela(ListaConsultasMedicoActivity.class);
-
-                        } else {
-
-                            Toast.makeText(
-                                    this,
-                                    "Seu acesso como médico ainda não foi autorizado.",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-
-                        return;
-                    }
-
-                    verificarPerfilPaciente(usuario);
-                })
-                .addOnFailureListener(e -> {
-
-                    Log.e(TAG, "Erro ao consultar perfil médico.", e);
-
-                    Toast.makeText(
-                            this,
-                            "Não foi possível consultar seu perfil médico. "
-                                    + "Verifique a conexão e as permissões do Firebase.",
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
-    }
-
-    private void verificarPerfilPaciente(FirebaseUser usuario) {
-
-        String uid = usuario.getUid();
-
-        db.collection("pacientes")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(documentoPaciente -> {
-
-                    if (documentoPaciente.exists()) {
-
-                        Log.d(TAG, "Perfil de paciente identificado.");
-
-                        abrirTela(ListaConsultasActivity.class);
-
-                        return;
-                    }
-
-                    if (usuarioEntrouComGoogle(usuario)) {
-
-                        Log.d(
-                                TAG,
-                                "Usuário Google precisa completar o cadastro."
-                        );
-
-                        abrirCadastroGoogle();
-
-                    } else {
-
-                        Toast.makeText(
-                                this,
-                                "Cadastro de paciente não encontrado. "
-                                        + "Faça seu cadastro para continuar.",
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                        mAuth.signOut();
-                    }
-                })
-                .addOnFailureListener(e -> {
-
-                    Log.e(TAG, "Erro ao consultar perfil do paciente.", e);
-
-                    Toast.makeText(
-                            this,
-                            "Não foi possível consultar seu cadastro.",
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
-    }
-
-    private boolean usuarioEntrouComGoogle(FirebaseUser usuario) {
-
-        for (com.google.firebase.auth.UserInfo informacao
-                : usuario.getProviderData()) {
-
-            if ("google.com".equals(informacao.getProviderId())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void abrirCadastroGoogle() {
-
-        Intent intent = new Intent(
-                LoginActivity.this,
-                MainActivity.class
-        );
-
-        intent.putExtra(
-                EXTRA_COMPLETAR_CADASTRO_GOOGLE,
-                true
-        );
-
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-        startActivity(intent);
-        finish();
-    }
-
-    private void abrirTela(Class<?> destino) {
-
-        Intent intent = new Intent(
-                LoginActivity.this,
-                destino
-        );
-
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-        startActivity(intent);
-        finish();
+        Sessao.encaminhar(this, null);
     }
 
     private final ActivityResultLauncher<Intent> googleLauncher =

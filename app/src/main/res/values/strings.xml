@@ -27,4 +27,7 @@
   <string name="login_ou">ou</string>
   <string name="login_botao_google">Entrar com o Google</string>
   <string name="login_cadastro">Não tem conta? Cadastre-se</string>
+  <string name="voltar">Voltar</string>
+  <string name="nome_clinica">Clínica Médica Vida Plus</string>
+  <string name="endereco_clinica">R. Bernardino de Campos, 933 - Centro, Indaiatuba - SP</string>
 </resources>

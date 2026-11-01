@@ -1,8 +1,21 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ClinicaVidaPlus" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <style name="Base.Theme.ClinicaVidaPlus" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primaria</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/primaria_clara</item>
+        <item name="colorOnPrimaryContainer">@color/primaria_escura</item>
+        <item name="colorSecondaryContainer">@color/primaria_clara</item>
+        <item name="colorOnSecondaryContainer">@color/primaria_escura</item>
+        <item name="colorSurface">@color/superficie</item>
+        <item name="colorOnSurface">@color/texto_escuro</item>
+        <item name="android:colorBackground">@color/fundo</item>
+        <item name="android:windowBackground">@color/fundo</item>
+        <item name="android:textColorHint">@color/texto_claro</item>
+        <item name="android:statusBarColor">@color/fundo</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/superficie</item>
+        <!-- Mantém Button como AppCompatButton para respeitar os fundos próprios. -->
+        <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
     </style>
 
     <style name="Theme.ClinicaVidaPlus" parent="Base.Theme.ClinicaVidaPlus" />

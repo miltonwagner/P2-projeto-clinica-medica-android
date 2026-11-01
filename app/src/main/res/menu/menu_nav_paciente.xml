@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_consultas"
+        android:icon="@drawable/ic_nav_consultas"
+        android:title="Consultas" />
+    <item
+        android:id="@+id/nav_agendar"
+        android:icon="@drawable/ic_nav_agendar"
+        android:title="Agendar" />
+    <item
+        android:id="@+id/nav_clinica"
+        android:icon="@drawable/ic_nav_clinica"
+        android:title="Clínica" />
+    <item
+        android:id="@+id/nav_perfil"
+        android:icon="@drawable/ic_nav_perfil"
+        android:title="Perfil" />
+</menu>

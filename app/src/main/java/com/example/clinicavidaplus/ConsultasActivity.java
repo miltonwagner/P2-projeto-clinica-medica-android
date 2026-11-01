@@ -3,8 +3,6 @@ package com.example.clinicavidaplus;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -73,18 +71,7 @@ public class ConsultasActivity extends AppCompatActivity {
             );
             spinnerMedicos.setAdapter(adapterMed);
 
-            findViewById(R.id.btnVoltar).setOnClickListener(v -> {
-                Intent intent = new Intent(
-                        ConsultasActivity.this,
-                        IndexActivity.class
-                );
-                intent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                );
-                startActivity(intent);
-                finish();
-            });
+            NavegacaoInferior.configurar(this, R.id.nav_agendar);
 
             findViewById(R.id.btnSelecionarData).setOnClickListener(v -> {
                 Calendar c = Calendar.getInstance();
@@ -201,32 +188,22 @@ public class ConsultasActivity extends AppCompatActivity {
                     }
 
                     for (String h : horas) {
-                        Button botao = new Button(this);
-                        botao.setText(h);
+                        Button botao = criarBotaoHorario(h);
 
                         if (ocupados.contains(h)) {
                             botao.setEnabled(false);
-                            botao.setBackgroundTintList(
-                                    ColorStateList.valueOf(Color.LTGRAY)
-                            );
+                            botao.setBackgroundResource(R.drawable.bg_chip);
+                            botao.setTextColor(getColor(R.color.texto_claro));
                         } else {
-                            botao.setBackgroundTintList(
-                                    ColorStateList.valueOf(
-                                            Color.parseColor("#E8F5E9")
-                                    )
-                            );
-                            botao.setTextColor(Color.BLACK);
+                            botao.setBackgroundResource(R.drawable.bg_chip);
+                            botao.setTextColor(getColor(R.color.texto_medio));
 
                             botao.setOnClickListener(v -> {
                                 horaF = h;
                                 resetarCoresBotoes();
 
-                                botao.setBackgroundTintList(
-                                        ColorStateList.valueOf(
-                                                Color.parseColor("#2E7D32")
-                                        )
-                                );
-                                botao.setTextColor(Color.WHITE);
+                                botao.setBackgroundResource(R.drawable.bg_chip_selecionado);
+                                botao.setTextColor(getColor(R.color.white));
                             });
                         }
 
@@ -247,6 +224,29 @@ public class ConsultasActivity extends AppCompatActivity {
                 });
     }
 
+    /** Botão de horário no padrão "chip" (3 por linha). */
+    private Button criarBotaoHorario(String horario) {
+        Button botao = new Button(this);
+        botao.setText(horario);
+        botao.setAllCaps(false);
+        botao.setTextSize(14);
+        botao.setStateListAnimator(null);
+        botao.setMinWidth(0);
+        botao.setMinimumWidth(0);
+
+        GridLayout.LayoutParams parametros = new GridLayout.LayoutParams(
+                GridLayout.spec(GridLayout.UNDEFINED),
+                GridLayout.spec(GridLayout.UNDEFINED, 1f)
+        );
+        parametros.width = 0;
+        parametros.height = Tela.dp(this, 44);
+        int margem = Tela.dp(this, 4);
+        parametros.setMargins(margem, margem, margem, margem);
+        botao.setLayoutParams(parametros);
+
+        return botao;
+    }
+
     private void resetarCoresBotoes() {
         if (grid == null) {
             return;
@@ -257,12 +257,8 @@ public class ConsultasActivity extends AppCompatActivity {
                 Button botao = (Button) grid.getChildAt(i);
 
                 if (botao.isEnabled()) {
-                    botao.setBackgroundTintList(
-                            ColorStateList.valueOf(
-                                    Color.parseColor("#E8F5E9")
-                            )
-                    );
-                    botao.setTextColor(Color.BLACK);
+                    botao.setBackgroundResource(R.drawable.bg_chip);
+                    botao.setTextColor(getColor(R.color.texto_medio));
                 }
             }
         }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_medicos"
+        android:icon="@drawable/ic_nav_medicos"
+        android:title="Médicos" />
+    <item
+        android:id="@+id/nav_clinica"
+        android:icon="@drawable/ic_nav_clinica"
+        android:title="Clínica" />
+    <item
+        android:id="@+id/nav_perfil"
+        android:icon="@drawable/ic_nav_perfil"
+        android:title="Perfil" />
+</menu>
