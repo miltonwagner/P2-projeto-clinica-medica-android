@@ -36,16 +36,28 @@ jobs:
           mkdir -p ~/.android
           echo "$DEBUG_KEYSTORE" | base64 -d > ~/.android/debug.keystore
 
+      - name: Versao do build (minutos desde 2026, cresce em qualquer branch)
+        run: |
+          VC=$(( ($(date +%s) - 1767225600) / 60 ))
+          echo "VC=$VC" >> "$GITHUB_ENV"
+          sed -i "s/versionCode = 1\$/versionCode = $VC/" app/build.gradle.kts
+
       - name: Compilar APK debug
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace \
+            -PversionCodeCi="$VC" -PcanalAtualizacao="$TAG"
 
       - name: Renomear APK
         run: |
           SHORT=$(git rev-parse --short HEAD)
           cp app/build/outputs/apk/debug/app-debug.apk "ClinicaVidaPlus.apk"
           echo "SHORT=$SHORT" >> "$GITHUB_ENV"
+          NOTAS=$(git log -1 --format=%s | sed 's/^[a-z]*: //')
+          jq -n --argjson vc "$VC" --arg vn "1.0.$VC" --arg commit "$SHORT" --arg notas "$NOTAS" \
+            --arg apk "https://github.com/${{ github.repository }}/releases/download/$TAG/ClinicaVidaPlus.apk" \
+            '{versionCode: $vc, versionName: $vn, commit: $commit, notas: $notas, apk: $apk}' > versao.json
+          cat versao.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -57,7 +69,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete "$TAG" --cleanup-tag -y || true
-          gh release create "$TAG" ClinicaVidaPlus.apk \
+          gh release create "$TAG" ClinicaVidaPlus.apk versao.json \
             --target "$GITHUB_SHA" \
             --prerelease \
             --title "APK master (${SHORT})" \
