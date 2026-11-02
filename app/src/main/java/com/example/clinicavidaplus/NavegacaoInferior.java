@@ -23,6 +23,7 @@ public final class NavegacaoInferior {
     }
 
     public static void configurar(AppCompatActivity activity, int itemAtual) {
+        Atualizador.verificar(activity);
         BottomNavigationView nav = activity.findViewById(R.id.navInferior);
         String perfil = Sessao.perfil(activity);
         boolean logado = FirebaseAuth.getInstance().getCurrentUser() != null;

@@ -11,8 +11,12 @@ android {
         applicationId = "com.example.clinicavidaplus"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // No GitHub Actions: versionCode crescente e o canal (release) que o app consulta.
+        val codigoCi = (findProperty("versionCodeCi") as String?)?.toIntOrNull()
+        versionCode = codigoCi ?: 1
+        versionName = if (codigoCi != null) "1.0.$codigoCi" else "1.0"
+        val canal = (findProperty("canalAtualizacao") as String?) ?: ""
+        buildConfigField("String", "CANAL_ATUALIZACAO", "\"$canal\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +29,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
