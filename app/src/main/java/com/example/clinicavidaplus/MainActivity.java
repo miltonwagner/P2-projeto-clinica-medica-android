@@ -1,3 +1,4 @@
+
 package com.example.clinicavidaplus;
 
 import android.app.DatePickerDialog;
@@ -187,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Máscara de data com preservação da posição do cursor.
     private void configurarMascaraDataNascimento() {
         editNascimento.addTextChangedListener(new TextWatcher() {
 
@@ -216,49 +218,74 @@ public class MainActivity extends AppCompatActivity {
 
                 alterandoDataNascimento = true;
 
-                String numeros = s.toString()
-                        .replaceAll("[^0-9]", "");
+                try {
+                    int cursorAtual = editNascimento.getSelectionStart();
 
-                if (numeros.length() > 8) {
-                    numeros = numeros.substring(0, 8);
+                    if (cursorAtual < 0) {
+                        cursorAtual = s.length();
+                    }
+
+                    String textoOriginal = s.toString();
+
+                    int digitosAntesDoCursor = 0;
+
+                    for (int i = 0;
+                         i < Math.min(cursorAtual, textoOriginal.length());
+                         i++) {
+
+                        if (Character.isDigit(textoOriginal.charAt(i))) {
+                            digitosAntesDoCursor++;
+                        }
+                    }
+
+                    String numeros = textoOriginal.replaceAll("[^0-9]", "");
+
+                    if (numeros.length() > 8) {
+                        numeros = numeros.substring(0, 8);
+                    }
+
+                    StringBuilder formatado = new StringBuilder();
+
+                    for (int i = 0; i < numeros.length(); i++) {
+
+                        if (i == 2 || i == 4) {
+                            formatado.append("/");
+                        }
+
+                        formatado.append(numeros.charAt(i));
+                    }
+
+                    String resultado = formatado.toString();
+
+                    if (!resultado.equals(textoOriginal)) {
+                        editNascimento.setText(resultado);
+
+                        int novaPosicao = 0;
+                        int digitosContados = 0;
+
+                        while (novaPosicao < resultado.length()
+                                && digitosContados < digitosAntesDoCursor) {
+
+                            if (Character.isDigit(resultado.charAt(novaPosicao))) {
+                                digitosContados++;
+                            }
+
+                            novaPosicao++;
+                        }
+
+                        if (novaPosicao < resultado.length()
+                                && (novaPosicao == 2 || novaPosicao == 5)) {
+                            novaPosicao++;
+                        }
+
+                        editNascimento.setSelection(
+                                Math.min(novaPosicao, resultado.length())
+                        );
+                    }
+
+                } finally {
+                    alterandoDataNascimento = false;
                 }
-
-                StringBuilder dataFormatada = new StringBuilder();
-
-                if (numeros.length() > 0) {
-                    dataFormatada.append(
-                            numeros.substring(
-                                    0,
-                                    Math.min(2, numeros.length())
-                            )
-                    );
-                }
-
-                if (numeros.length() > 2) {
-                    dataFormatada.append("/");
-                    dataFormatada.append(
-                            numeros.substring(
-                                    2,
-                                    Math.min(4, numeros.length())
-                            )
-                    );
-                }
-
-                if (numeros.length() > 4) {
-                    dataFormatada.append("/");
-                    dataFormatada.append(
-                            numeros.substring(4, 8)
-                    );
-                }
-
-                String resultado = dataFormatada.toString();
-
-                if (!resultado.equals(s.toString())) {
-                    editNascimento.setText(resultado);
-                    editNascimento.setSelection(resultado.length());
-                }
-
-                alterandoDataNascimento = false;
             }
         });
     }
@@ -298,16 +325,12 @@ public class MainActivity extends AppCompatActivity {
             String telefone,
             String nascimento
     ) {
-        if (!validarDadosBasicos(
+        return validarDadosBasicos(
                 nome,
                 email,
                 telefone,
                 nascimento
-        )) {
-            return false;
-        }
-
-        return true;
+        );
     }
 
     private boolean validarCampos(
@@ -361,8 +384,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
 
-        if (!android.util.Patterns.EMAIL_ADDRESS
-                .matcher(email).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editEmail.setError("Informe um e-mail válido");
             editEmail.requestFocus();
             return false;

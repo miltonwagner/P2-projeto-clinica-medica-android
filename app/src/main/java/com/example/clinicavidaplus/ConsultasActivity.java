@@ -17,29 +17,33 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ConsultasActivity extends AppCompatActivity {
 
     private Spinner spinnerMedicos, spinnerEspecialidades;
     private TextView txtData;
     private GridLayout grid;
+
     private String dataF = "";
     private String horaF = "";
+
     private FirebaseFirestore db;
+
+    // Identifica a consulta mais recente de horários.
+    private int requisicaoHorarios = 0;
 
     private static final String MEDICO_ARNALDO_ID =
             "ppBJexJ2FEUoijPoAhidZzuvBar2";
+
     private static final String MEDICA_JULIANA_ID =
             "CgzDk7lod9hkniRUQMHc4szYUMG2";
+
     private static final String MEDICO_ROBERTO_ID =
             "krdYyomS2GQEAw3WZTVYqqFO2X03";
 
@@ -49,6 +53,7 @@ public class ConsultasActivity extends AppCompatActivity {
 
         try {
             setContentView(R.layout.activity_consultas);
+
             db = FirebaseFirestore.getInstance();
 
             spinnerMedicos = findViewById(R.id.spinnerMedicos);
@@ -68,90 +73,129 @@ public class ConsultasActivity extends AppCompatActivity {
                     android.R.layout.simple_spinner_item,
                     medicos
             );
+
             adapterMed.setDropDownViewResource(
                     android.R.layout.simple_spinner_dropdown_item
             );
+
             spinnerMedicos.setAdapter(adapterMed);
 
-            findViewById(R.id.btnVoltar).setOnClickListener(v -> {
-                Intent intent = new Intent(
-                        ConsultasActivity.this,
-                        IndexActivity.class
-                );
-                intent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                );
-                startActivity(intent);
-                finish();
-            });
-
-            findViewById(R.id.btnSelecionarData).setOnClickListener(v -> {
-                Calendar c = Calendar.getInstance();
-
-                new DatePickerDialog(
-                        this,
-                        (view, y, m, d) -> {
-                            dataF = String.format(
-                                    "%02d/%02d/%d",
-                                    d,
-                                    m + 1,
-                                    y
-                            );
-                            txtData.setText("Data: " + dataF);
-                            horaF = "";
-                            carregarHorariosDisponiveis();
-                        },
-                        c.get(Calendar.YEAR),
-                        c.get(Calendar.MONTH),
-                        c.get(Calendar.DAY_OF_MONTH)
-                ).show();
-            });
-
-            spinnerMedicos.setOnItemSelectedListener(
-                    new android.widget.AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(
-                                android.widget.AdapterView<?> parent,
-                                android.view.View view,
-                                int position,
-                                long id
-                        ) {
-                            horaF = "";
-                            if (!dataF.isEmpty()) {
-                                carregarHorariosDisponiveis();
-                            } else if (grid != null) {
-                                grid.removeAllViews();
-                            }
-                        }
-
-                        @Override
-                        public void onNothingSelected(
-                                android.widget.AdapterView<?> parent
-                        ) {
-                            horaF = "";
-                            if (grid != null) {
-                                grid.removeAllViews();
-                            }
-                        }
-                    }
-            );
-
-            findViewById(R.id.btnConfirmarAgendamento)
-                    .setOnClickListener(v -> abrirRevisaoAgendamento());
+            configurarBotaoVoltar();
+            configurarSelecaoData();
+            configurarSelecaoMedico();
+            configurarBotaoConfirmar();
 
         } catch (Exception e) {
+
             Log.e("CONSULTAS_ERRO", "Erro ao carregar a tela", e);
+
             Toast.makeText(
                     this,
                     "Erro ao carregar a tela de consultas.",
                     Toast.LENGTH_LONG
             ).show();
+
             finish();
         }
     }
 
+    private void configurarBotaoVoltar() {
+
+        findViewById(R.id.btnVoltar).setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    ConsultasActivity.this,
+                    IndexActivity.class
+            );
+
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP
+            );
+
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void configurarSelecaoData() {
+
+        findViewById(R.id.btnSelecionarData).setOnClickListener(v -> {
+
+            Calendar c = Calendar.getInstance();
+
+            new DatePickerDialog(
+                    this,
+                    (view, y, m, d) -> {
+
+                        dataF = String.format(
+                                "%02d/%02d/%d",
+                                d,
+                                m + 1,
+                                y
+                        );
+
+                        txtData.setText("Data: " + dataF);
+
+                        horaF = "";
+
+                        carregarHorariosDisponiveis();
+                    },
+                    c.get(Calendar.YEAR),
+                    c.get(Calendar.MONTH),
+                    c.get(Calendar.DAY_OF_MONTH)
+            ).show();
+        });
+    }
+
+    private void configurarSelecaoMedico() {
+
+        spinnerMedicos.setOnItemSelectedListener(
+                new android.widget.AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(
+                            android.widget.AdapterView<?> parent,
+                            android.view.View view,
+                            int position,
+                            long id
+                    ) {
+
+                        horaF = "";
+
+                        if (!dataF.isEmpty()) {
+
+                            carregarHorariosDisponiveis();
+
+                        } else if (grid != null) {
+
+                            grid.removeAllViews();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            android.widget.AdapterView<?> parent
+                    ) {
+
+                        horaF = "";
+
+                        if (grid != null) {
+                            grid.removeAllViews();
+                        }
+                    }
+                }
+        );
+    }
+
+    private void configurarBotaoConfirmar() {
+
+        findViewById(R.id.btnConfirmarAgendamento)
+                .setOnClickListener(v -> abrirRevisaoAgendamento());
+    }
+
     private String obterMedicoId(String medico) {
+
         if ("Dr. Arnaldo Silva".equals(medico)) {
             return MEDICO_ARNALDO_ID;
         }
@@ -168,181 +212,181 @@ public class ConsultasActivity extends AppCompatActivity {
     }
 
     private void carregarHorariosDisponiveis() {
+
         if (grid == null || spinnerMedicos.getSelectedItem() == null) {
             return;
         }
 
         String medico = spinnerMedicos.getSelectedItem().toString();
 
-        if (dataF.isEmpty() || "Selecione o Médico".equals(medico)) {
+        if (dataF.isEmpty()
+                || "Selecione o Médico".equals(medico)) {
+
             grid.removeAllViews();
+            horaF = "";
             return;
         }
 
+        String medicoId = obterMedicoId(medico);
+
+        if (medicoId == null) {
+
+            grid.removeAllViews();
+            horaF = "";
+
+            Toast.makeText(
+                    this,
+                    "Não foi possível identificar o médico.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        // Invalida consultas anteriores que ainda estejam carregando.
+        final int requisicaoAtual = ++requisicaoHorarios;
+
         grid.removeAllViews();
+        horaF = "";
 
         String[] horas = {
                 "08:00", "09:00", "10:00", "11:00",
                 "13:00", "14:00", "15:00", "16:00", "17:00"
         };
 
-        db.collection("agendamentos")
-                .whereEqualTo("medico", medico)
+        // Agora consultamos somente os horários ocupados.
+        // Não precisamos acessar os agendamentos de outros pacientes.
+        db.collection("horarios_ocupados")
+                .whereEqualTo("medicoId", medicoId)
                 .whereEqualTo("data", dataF)
+                .whereEqualTo("ocupado", true)
                 .get()
                 .addOnSuccessListener(snapshots -> {
+
+                    // Ignora resultados de consultas antigas.
+                    if (requisicaoAtual != requisicaoHorarios) {
+                        return;
+                    }
+
                     List<String> ocupados = new ArrayList<>();
 
                     for (DocumentSnapshot doc : snapshots) {
+
                         String horario = doc.getString("horario");
+
                         if (horario != null) {
                             ocupados.add(horario);
                         }
                     }
 
-                    for (String h : horas) {
-                        Button botao = new Button(this);
-                        botao.setText(h);
+                    exibirHorarios(horas, ocupados);
 
-                        if (ocupados.contains(h)) {
-                            botao.setEnabled(false);
-                            botao.setBackgroundTintList(
-                                    ColorStateList.valueOf(Color.LTGRAY)
-                            );
-                        } else {
-                            botao.setBackgroundTintList(
-                                    ColorStateList.valueOf(
-                                            Color.parseColor("#E8F5E9")
-                                    )
-                            );
-                            botao.setTextColor(Color.BLACK);
-
-                            botao.setOnClickListener(v -> {
-                                horaF = h;
-                                resetarCoresBotoes();
-
-                                botao.setBackgroundTintList(
-                                        ColorStateList.valueOf(
-                                                Color.parseColor("#2E7D32")
-                                        )
-                                );
-                                botao.setTextColor(Color.WHITE);
-                            });
-                        }
-
-                        grid.addView(botao);
-                    }
                 })
                 .addOnFailureListener(e -> {
+
+                    if (requisicaoAtual != requisicaoHorarios) {
+                        return;
+                    }
+
                     Log.e(
                             "CONSULTAS_HORARIOS",
-                            "Erro ao consultar horários",
+                            "Erro ao consultar horários ocupados",
                             e
                     );
+
+                    grid.removeAllViews();
+                    horaF = "";
+
                     Toast.makeText(
                             this,
-                            "Não foi possível carregar os horários. Tente novamente.",
+                            "Não foi possível carregar os horários. "
+                                    + "Verifique a conexão e as permissões do Firebase.",
                             Toast.LENGTH_LONG
                     ).show();
                 });
     }
 
+    private void exibirHorarios(
+            String[] horas,
+            List<String> ocupados
+    ) {
+
+        grid.removeAllViews();
+
+        for (String h : horas) {
+
+            Button botao = new Button(this);
+
+            botao.setText(h);
+
+            if (ocupados.contains(h)) {
+
+                // Horário já reservado.
+                botao.setEnabled(false);
+
+                botao.setBackgroundTintList(
+                        ColorStateList.valueOf(Color.LTGRAY)
+                );
+
+            } else {
+
+                // Horário disponível.
+                botao.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                Color.parseColor("#E8F5E9")
+                        )
+                );
+
+                botao.setTextColor(Color.BLACK);
+
+                botao.setOnClickListener(v -> {
+
+                    horaF = h;
+
+                    resetarCoresBotoes();
+
+                    botao.setBackgroundTintList(
+                            ColorStateList.valueOf(
+                                    Color.parseColor("#2E7D32")
+                            )
+                    );
+
+                    botao.setTextColor(Color.WHITE);
+                });
+            }
+
+            grid.addView(botao);
+        }
+    }
+
     private void resetarCoresBotoes() {
+
         if (grid == null) {
             return;
         }
 
         for (int i = 0; i < grid.getChildCount(); i++) {
+
             if (grid.getChildAt(i) instanceof Button) {
+
                 Button botao = (Button) grid.getChildAt(i);
 
                 if (botao.isEnabled()) {
+
                     botao.setBackgroundTintList(
                             ColorStateList.valueOf(
                                     Color.parseColor("#E8F5E9")
                             )
                     );
+
                     botao.setTextColor(Color.BLACK);
                 }
             }
         }
     }
 
-    /*
-     * Método antigo mantido para preservar o código existente.
-     * O fluxo principal de agendamento utiliza a tela de revisão.
-     */
-    private void salvarAgendamento() {
-        String med = spinnerMedicos.getSelectedItem() == null
-                ? ""
-                : spinnerMedicos.getSelectedItem().toString();
-
-        if (dataF.isEmpty() || horaF.isEmpty()
-                || med.isEmpty()
-                || "Selecione o Médico".equals(med)) {
-            Toast.makeText(
-                    this,
-                    "Preencha médico, data e horário!",
-                    Toast.LENGTH_SHORT
-            ).show();
-            return;
-        }
-
-        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (usuario == null) {
-            Toast.makeText(
-                    this,
-                    "Faça login para agendar uma consulta.",
-                    Toast.LENGTH_LONG
-            ).show();
-            return;
-        }
-
-        String medicoId = obterMedicoId(med);
-
-        if (medicoId == null) {
-            Toast.makeText(
-                    this,
-                    "Médico inválido.",
-                    Toast.LENGTH_LONG
-            ).show();
-            return;
-        }
-
-        Map<String, Object> consulta = new HashMap<>();
-        consulta.put("medico", med);
-        consulta.put("medicoId", medicoId);
-        consulta.put(
-                "especialidade",
-                spinnerEspecialidades.getSelectedItem().toString()
-        );
-        consulta.put("data", dataF);
-        consulta.put("horario", horaF);
-        consulta.put("status", "Agendado");
-        consulta.put("usuarioId", usuario.getUid());
-
-        db.collection("agendamentos")
-                .add(consulta)
-                .addOnSuccessListener(docRef -> {
-                    Intent intent = new Intent(
-                            this,
-                            ListaConsultasActivity.class
-                    );
-                    intent.putExtra("agendamentoId", docRef.getId());
-                    startActivity(intent);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("CONSULTAS_SALVAR", "Erro ao agendar", e);
-                    Toast.makeText(
-                            this,
-                            "Erro ao agendar: " + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
-    }
-
     private void abrirRevisaoAgendamento() {
+
         String medico = spinnerMedicos.getSelectedItem() == null
                 ? ""
                 : spinnerMedicos.getSelectedItem().toString();
@@ -356,34 +400,66 @@ public class ConsultasActivity extends AppCompatActivity {
                 || especialidade.isEmpty()
                 || dataF.isEmpty()
                 || horaF.isEmpty()) {
+
             Toast.makeText(
                     this,
                     "Selecione especialidade, médico, data e horário.",
                     Toast.LENGTH_LONG
             ).show();
+
+            return;
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+
+            Toast.makeText(
+                    this,
+                    "Faça login para agendar uma consulta.",
+                    Toast.LENGTH_LONG
+            ).show();
+
             return;
         }
 
         String medicoId = obterMedicoId(medico);
 
         if (medicoId == null) {
+
             Toast.makeText(
                     this,
                     "Não foi possível identificar o médico selecionado.",
                     Toast.LENGTH_LONG
             ).show();
+
             return;
         }
+
+        // Identificadores determinísticos do horário.
+        String dataChave = dataF.replace("/", "-");
+
+        String horarioChave = horaF.replace(":", "-");
+
+        String horarioId = medicoId
+                + "_"
+                + dataChave
+                + "_"
+                + horarioChave;
 
         Intent intent = new Intent(
                 this,
                 RevisaoAgendamentoActivity.class
         );
+
         intent.putExtra("medico", medico);
         intent.putExtra("medicoId", medicoId);
         intent.putExtra("especialidade", especialidade);
         intent.putExtra("data", dataF);
         intent.putExtra("horario", horaF);
+
+        // Informações necessárias para a transação no Firestore.
+        intent.putExtra("dataChave", dataChave);
+        intent.putExtra("horarioChave", horarioChave);
+        intent.putExtra("horarioId", horarioId);
 
         startActivity(intent);
     }

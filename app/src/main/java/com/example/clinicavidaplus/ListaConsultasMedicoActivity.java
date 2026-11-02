@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -155,11 +156,11 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
 
         GradientDrawable fundo = new GradientDrawable();
         fundo.setColor(Color.WHITE);
-        fundo.setCornerRadius(20);
+        fundo.setCornerRadius(dp(20));
         fundo.setStroke(1, Color.rgb(220, 232, 224));
 
         card.setBackground(fundo);
-        card.setElevation(3);
+        card.setElevation(dp(3));
 
         LinearLayout.LayoutParams parametros =
                 new LinearLayout.LayoutParams(
@@ -167,7 +168,7 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        parametros.setMargins(0, 0, 0, 16);
+        parametros.setMargins(0, 0, 0, dp(16));
 
         card.setLayoutParams(parametros);
 
@@ -175,7 +176,14 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
         String data = obterTexto(documento, "data");
         String horario = obterTexto(documento, "horario");
         String status = obterTexto(documento, "status");
-        String pacienteId = obterTexto(documento, "usuarioId");
+
+        // Obtém o nome diretamente do documento do agendamento.
+        String pacienteNome = obterTexto(documento, "pacienteNome");
+
+        // Compatibilidade com os agendamentos antigos.
+        if (pacienteNome.trim().isEmpty()) {
+            pacienteNome = "Paciente de agendamento anterior";
+        }
 
         adicionarTexto(
                 card,
@@ -185,9 +193,9 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
                 true
         );
 
-        TextView txtPaciente = adicionarTexto(
+        adicionarTexto(
                 card,
-                "Paciente: carregando...",
+                "Paciente: " + pacienteNome,
                 15,
                 "#334155",
                 true
@@ -219,30 +227,97 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
 
         containerConsultas.addView(card);
 
-        if (pacienteId.isEmpty()) {
-            txtPaciente.setText("Paciente: identificação indisponível");
-            return;
+        // Exibe o botão somente para consultas ainda agendadas.
+        if ("Agendado".equalsIgnoreCase(status)) {
+            adicionarBotaoExecutado(card, documento);
         }
+    }
 
-        db.collection("pacientes")
-                .document(pacienteId)
-                .get()
-                .addOnSuccessListener(documentoPaciente -> {
+    private void adicionarBotaoExecutado(
+            LinearLayout card,
+            DocumentSnapshot documento) {
 
-                    String nomePaciente =
-                            documentoPaciente.getString("nome");
+        Button botao = new Button(this);
 
-                    if (nomePaciente == null || nomePaciente.trim().isEmpty()) {
-                        nomePaciente = "Cadastro não localizado";
-                    }
+        botao.setText("Marcar como Executado");
+        botao.setTextColor(Color.WHITE);
+        botao.setTextSize(14);
+        botao.setAllCaps(false);
+        botao.setTypeface(null, Typeface.BOLD);
 
-                    txtPaciente.setText("Paciente: " + nomePaciente);
-                })
-                .addOnFailureListener(e ->
-                        txtPaciente.setText(
-                                "Paciente: não foi possível consultar o cadastro"
-                        )
+        GradientDrawable fundoBotao = new GradientDrawable();
+        fundoBotao.setColor(Color.parseColor("#246B45"));
+        fundoBotao.setCornerRadius(dp(12));
+
+        botao.setBackground(fundoBotao);
+
+        LinearLayout.LayoutParams parametros =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        dp(50)
                 );
+
+        parametros.topMargin = dp(12);
+
+        botao.setLayoutParams(parametros);
+
+        botao.setOnClickListener(v ->
+                confirmarExecucao(documento, botao)
+        );
+
+        card.addView(botao);
+    }
+
+    private void confirmarExecucao(
+            DocumentSnapshot documento,
+            Button botao) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar realização")
+                .setMessage(
+                        "Deseja marcar esta consulta como Executado?"
+                )
+                .setNegativeButton("Cancelar", (dialog, which) ->
+                        dialog.dismiss()
+                )
+                .setPositiveButton("Confirmar", (dialog, which) ->
+                        atualizarStatusConsulta(documento, botao)
+                )
+                .show();
+    }
+
+    private void atualizarStatusConsulta(
+            DocumentSnapshot documento,
+            Button botao) {
+
+        botao.setEnabled(false);
+        botao.setText("Atualizando...");
+
+        // Atualiza exclusivamente o campo status.
+        documento.getReference()
+                .update("status", "Executado")
+                .addOnSuccessListener(unused -> {
+
+                    Toast.makeText(
+                            this,
+                            "Consulta marcada como Executado!",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    carregarConsultasMedico();
+                })
+                .addOnFailureListener(e -> {
+
+                    botao.setEnabled(true);
+                    botao.setText("Marcar como Executado");
+
+                    Toast.makeText(
+                            this,
+                            "Não foi possível atualizar a consulta. "
+                                    + "Verifique as permissões do Firebase.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
     }
 
     private TextView adicionarTexto(
@@ -250,8 +325,7 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
             String texto,
             int tamanho,
             String cor,
-            boolean negrito
-    ) {
+            boolean negrito) {
 
         TextView textView = new TextView(this);
 
@@ -269,7 +343,7 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        parametros.setMargins(0, 0, 0, 9);
+        parametros.setMargins(0, 0, 0, dp(9));
 
         textView.setLayoutParams(parametros);
 
@@ -280,12 +354,17 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
 
     private String obterTexto(
             DocumentSnapshot documento,
-            String campo
-    ) {
+            String campo) {
 
         String valor = documento.getString(campo);
 
         return valor == null ? "" : valor;
+    }
+
+    private int dp(int valor) {
+        return (int) (
+                valor * getResources().getDisplayMetrics().density
+        );
     }
 
     private void bloquearAcesso() {
@@ -334,4 +413,3 @@ public class ListaConsultasMedicoActivity extends AppCompatActivity {
         finish();
     }
 }
-

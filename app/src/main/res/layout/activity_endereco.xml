@@ -3,35 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F3F7F5">
+    android:background="#F4F8F5">
 
-    <!-- Cabeçalho moderno, sem logotipo e sem botão voltar -->
+    <!-- Cabeçalho -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#176B55"
-        android:paddingStart="24dp"
-        android:paddingTop="28dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="26dp">
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:paddingStart="20dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CLÍNICA MÉDICA VIDA PLUS"
-            android:textColor="#CBE9DC"
+            android:textColor="#47745A"
             android:textSize="12sp"
-            android:letterSpacing="0.08"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Nossa localização"
-            android:textColor="#FFFFFF"
-            android:textSize="28sp"
+            android:textColor="#174D35"
+            android:textSize="27sp"
             android:textStyle="bold" />
 
         <TextView
@@ -39,11 +40,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="Estamos prontos para receber você."
-            android:textColor="#E3F3EC"
-            android:textSize="15sp" />
+            android:textColor="#66766C"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
+    <!-- Conteúdo -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -55,112 +57,127 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="16dp"
+            android:paddingTop="22dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="20dp">
 
-            <!-- Cartão do endereço -->
+            <!-- Identificação da seção -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="ENDEREÇO E CONTATO"
+                android:textColor="#47745A"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <!-- Cartão de endereço -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#FFFFFF"
-                android:elevation="3dp"
-                android:padding="20dp">
+                android:elevation="2dp"
+                android:padding="22dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="ENDEREÇO"
-                    android:textColor="#176B55"
+                    android:textColor="#47745A"
                     android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="Rua Bernardino de Campos, 933"
-                    android:textColor="#20372E"
+                    android:textColor="#174D35"
                     android:textSize="19sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Centro, Indaiatuba - SP\nCEP: 13330-010"
-                    android:textColor="#5C6E64"
+                    android:layout_marginTop="7dp"
+                    android:text="Centro, Indaiatuba - SP&#10;CEP: 13330-010"
+                    android:textColor="#66766C"
                     android:textSize="15sp"
                     android:lineSpacingExtra="4dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="#E5EDE8" />
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="18dp"
+                    android:background="#E7EEE9" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="CONTATO"
-                    android:textColor="#176B55"
+                    android:textColor="#47745A"
                     android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="Telefone: (19) 99348-4567"
-                    android:textColor="#354A3F"
+                    android:textColor="#66766C"
                     android:textSize="15sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:text="E-mail: clinica@gmail.com"
-                    android:textColor="#354A3F"
+                    android:textColor="#66766C"
                     android:textSize="15sp" />
 
             </LinearLayout>
 
-            <!-- Ação principal: abrir o Google Maps -->
+            <!-- Botão Como Chegar -->
             <Button
                 android:id="@+id/btnAbrirMaps"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="54dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#2878D0"
-                android:text="COMO CHEGAR"
+                android:background="@drawable/bg_endereco_maps"
+                android:backgroundTint="@null"
+                android:text="Como chegar"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:elevation="2dp" />
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
 
-            <!-- Botão voltar reposicionado abaixo de Como chegar -->
+            <!-- Botão Voltar -->
             <Button
                 android:id="@+id/btnVoltarEnd"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="#E1EEE7"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_endereco_voltar"
+                android:backgroundTint="@null"
                 android:text="← Voltar"
                 android:textAllCaps="false"
-                android:textColor="#176B55"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="#205C35"
+                android:textSize="14sp"
+                android:elevation="0dp"
+                android:stateListAnimator="@null" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="22dp"
                 android:gravity="center"
                 android:text="Será um prazer receber você!"
-                android:textColor="#718178"
+                android:textColor="#66766C"
                 android:textSize="14sp"
                 android:textStyle="italic" />
 
@@ -171,11 +188,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#176B55"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
         android:gravity="center"
         android:padding="14dp"
         android:text="© 2026 Clínica Médica Vida Plus"
-        android:textColor="#FFFFFF"
-        android:textSize="11sp" />
+        android:textColor="#66766C"
+        android:textSize="12sp" />
 
 </LinearLayout>

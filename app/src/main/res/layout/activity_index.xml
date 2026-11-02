@@ -5,50 +5,33 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
 
+    <!-- Cabeçalho -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="68dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:paddingStart="18dp"
-        android:paddingEnd="14dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingEnd="18dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:background="#FFFFFF">
 
         <TextView
             android:id="@+id/txtTituloClinica"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/btnSairApp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
             android:text="Clínica Saúde e Cidadania"
             android:textColor="#17365D"
-            android:textSize="19sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:maxLines="2"
-            android:gravity="center_vertical"/>
-
-        <Button
-            android:id="@+id/btnSairApp"
-            android:layout_width="76dp"
-            android:layout_height="44dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="4dp"
-            android:text="Sair"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:textColor="#B42318"
-            android:background="@drawable/bg_home_sair"
-            android:stateListAnimator="@null"/>
+            android:gravity="center"
+            android:maxLines="2" />
 
     </RelativeLayout>
 
+    <!-- Conteúdo principal -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -63,18 +46,20 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="12dp"
-            android:paddingBottom="22dp"
+            android:paddingBottom="24dp"
             android:background="#FFFFFF">
 
+            <!-- Imagem da clínica -->
             <ImageView
                 android:id="@+id/imgFoto"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:scaleType="fitCenter"
                 android:contentDescription="Foto da Clínica Médica Vida Plus"
-                android:src="@drawable/foto_clinica_vidaplus"/>
+                android:src="@drawable/foto_clinica_vidaplus" />
 
+            <!-- Apresentação -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +67,7 @@
                 android:textColor="#17365D"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="6dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -90,49 +75,69 @@
                 android:text="Acesse nossos serviços de forma simples e rápida."
                 android:textColor="#60758D"
                 android:textSize="15sp"
-                android:layout_marginBottom="18dp"/>
+                android:layout_marginBottom="22dp" />
 
+            <!-- Botão Login -->
             <Button
                 android:id="@+id/btnIrLogin"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 android:padding="12dp"
                 android:text="LOGIN"
                 android:textColor="#FFFFFF"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:background="@drawable/bg_home_login"
-                android:stateListAnimator="@null"/>
+                android:stateListAnimator="@null" />
 
+            <!-- Botão Cadastro -->
             <Button
                 android:id="@+id/btnIrCadastro"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 android:padding="12dp"
                 android:text="CADASTRO"
                 android:textColor="#174A7E"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:background="@drawable/bg_home_cadastro"
-                android:stateListAnimator="@null"/>
+                android:stateListAnimator="@null" />
 
+            <!-- Botão Nossa Localização -->
             <Button
                 android:id="@+id/btnVerEndereco"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
+                android:layout_marginBottom="10dp"
                 android:padding="12dp"
                 android:text="NOSSA LOCALIZAÇÃO"
                 android:textColor="#174A7E"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:background="@drawable/bg_home_localizacao"
-                android:stateListAnimator="@null"/>
+                android:stateListAnimator="@null" />
+
+            <!-- Botão Sair: agora abaixo da localização -->
+            <Button
+                android:id="@+id/btnSairApp"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="2dp"
+                android:padding="12dp"
+                android:text="SAIR"
+                android:textColor="#174A7E"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_home_localizacao"
+                android:stateListAnimator="@null" />
 
         </LinearLayout>
     </ScrollView>
 
+    <!-- Rodapé -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -150,14 +155,14 @@
             android:text="R. Bernardino de Campos, 933 - Centro, Indaiatuba - SP"
             android:textColor="#FFFFFF"
             android:gravity="center"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="6dp"
-            android:background="#6686A8"/>
+            android:background="#6686A8" />
 
         <TextView
             android:layout_width="match_parent"
@@ -165,7 +170,7 @@
             android:text="© 2026 Clínica Médica Vida Plus"
             android:textColor="#D7E5F5"
             android:gravity="center"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </LinearLayout>
 
