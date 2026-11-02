@@ -18,6 +18,11 @@ android {
         val canal = (findProperty("canalAtualizacao") as String?) ?: ""
         buildConfigField("String", "CANAL_ATUALIZACAO", "\"$canal\"")
 
+        // Só processadores de celular (o Jitsi traz libs nativas pesadas por arquitetura).
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
