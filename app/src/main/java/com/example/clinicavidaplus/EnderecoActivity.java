@@ -17,10 +17,14 @@ public class EnderecoActivity extends AppCompatActivity {
         // Botão para voltar
         NavegacaoInferior.configurar(this, R.id.nav_clinica);
 
-        // Com o menu inferior visível (usuário logado), o "Voltar" do topo é dispensável.
+        // Quando a clínica é uma aba do menu (admin), o "Voltar" do topo é dispensável.
         View btnVoltar = findViewById(R.id.btnVoltarEnd);
         View nav = findViewById(R.id.navInferior);
-        btnVoltar.setVisibility(nav.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        com.google.android.material.bottomnavigation.BottomNavigationView menu =
+                (com.google.android.material.bottomnavigation.BottomNavigationView) nav;
+        boolean ehAba = nav.getVisibility() == View.VISIBLE
+                && menu.getMenu().findItem(R.id.nav_clinica) != null;
+        btnVoltar.setVisibility(ehAba ? View.GONE : View.VISIBLE);
         btnVoltar.setOnClickListener(v -> finish());
 
         // Botão que abre o Google Maps com o endereço de Indaiatuba

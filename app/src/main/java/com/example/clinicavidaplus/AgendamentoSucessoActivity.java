@@ -28,7 +28,7 @@ public class AgendamentoSucessoActivity extends AppCompatActivity {
 
         // Botão: Ver Minhas Consultas
         findViewById(R.id.btnVerMinhasConsultas).setOnClickListener(v ->
-                NavegacaoInferior.irParaInicio(this));
+                NavegacaoInferior.abrirAba(this, ListaConsultasActivity.class));
 
         // Botão: Novo Agendamento
         findViewById(R.id.btnNovoAgendamentoSucesso).setOnClickListener(v -> {
@@ -43,15 +43,18 @@ public class AgendamentoSucessoActivity extends AppCompatActivity {
         });
 
         // Botão: Voltar
-        // Voltar (botão ou gesto) leva à lista de consultas, não ao formulário.
+        // Voltar (botão ou gesto) leva às consultas, não ao formulário.
         findViewById(R.id.btnVoltarSucesso).setOnClickListener(v ->
-                NavegacaoInferior.irParaInicio(this));
+                NavegacaoInferior.abrirAba(this, ListaConsultasActivity.class));
 
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        NavegacaoInferior.irParaInicio(AgendamentoSucessoActivity.this);
+                        NavegacaoInferior.abrirAba(
+                                AgendamentoSucessoActivity.this,
+                                ListaConsultasActivity.class
+                        );
                     }
                 });
     }

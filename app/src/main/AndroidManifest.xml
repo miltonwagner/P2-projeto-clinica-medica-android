@@ -63,5 +63,23 @@
         android:name=".PerfilActivity"
         android:exported="false" />
 
+        <activity
+            android:name=".MarketplaceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilMedicoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardMedicoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AnotacoesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProntuarioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CarteiraActivity"
+            android:exported="false" />
   </application>
 </manifest>

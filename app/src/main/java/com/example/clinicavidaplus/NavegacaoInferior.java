@@ -48,12 +48,11 @@ public final class NavegacaoInferior {
             nav.setSelectedItemId(itemAtual);
         }
 
-        nav.setOnItemReselectedListener(item -> {
-            // Já está na aba: nada a fazer.
-        });
+        nav.setOnItemReselectedListener(item -> voltarParaRaizDaAba(activity, perfil, item.getItemId()));
 
         nav.setOnItemSelectedListener(item -> {
             if (item.getItemId() == itemAtual) {
+                voltarParaRaizDaAba(activity, perfil, item.getItemId());
                 return true;
             }
 
@@ -83,6 +82,33 @@ public final class NavegacaoInferior {
         activity.finish();
     }
 
+    /**
+     * Tocar na aba atual estando numa tela interna dela (ex.: perfil do
+     * médico dentro de "Buscar") volta para o início da aba.
+     */
+    private static void voltarParaRaizDaAba(AppCompatActivity activity, String perfil, int itemId) {
+        if (destinoDoItem(itemId, perfil) == Sessao.telaInicial(perfil) && !ehRaiz(activity, perfil)) {
+            irParaInicio(activity);
+        }
+    }
+
+    /**
+     * Abre uma aba secundária logo acima da tela inicial, descartando as
+     * telas intermediárias (voltar nela retorna ao início).
+     */
+    public static void abrirAba(AppCompatActivity activity, Class<?> destino) {
+        String perfil = Sessao.perfil(activity);
+        Intent inicio = new Intent(activity, Sessao.telaInicial(perfil));
+        inicio.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent aba = new Intent(activity, destino);
+        aba.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        activity.startActivities(new Intent[]{inicio, aba});
+        activity.finish();
+        activity.overridePendingTransition(0, 0);
+    }
+
     private static boolean ehRaiz(AppCompatActivity activity, String perfil) {
         return activity.getClass() == Sessao.telaInicial(perfil);
     }
@@ -94,20 +120,21 @@ public final class NavegacaoInferior {
             return;
         }
 
-        Intent intent = new Intent(activity, destino);
-
         if (destino == Sessao.telaInicial(perfil)) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            irParaInicio(activity);
+            activity.overridePendingTransition(0, 0);
+            return;
         }
 
+        if (!ehRaiz(activity, perfil)) {
+            // A raiz fica sempre na pilha; telas internas e abas são substituídas.
+            abrirAba(activity, destino);
+            return;
+        }
+
+        Intent intent = new Intent(activity, destino);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         activity.startActivity(intent);
-
-        // A raiz fica sempre na pilha; abas secundárias são substituídas.
-        if (!ehRaiz(activity, perfil)) {
-            activity.finish();
-        }
-
         activity.overridePendingTransition(0, 0);
     }
 
@@ -124,14 +151,24 @@ public final class NavegacaoInferior {
     }
 
     private static Class<?> destinoDoItem(int itemId, String perfil) {
-        if (itemId == R.id.nav_consultas
-                || itemId == R.id.nav_agenda_medico
-                || itemId == R.id.nav_medicos) {
+        if (itemId == R.id.nav_inicio || itemId == R.id.nav_medicos) {
             return Sessao.telaInicial(perfil);
         }
 
-        if (itemId == R.id.nav_agendar) {
-            return ConsultasActivity.class;
+        if (itemId == R.id.nav_consultas) {
+            return ListaConsultasActivity.class;
+        }
+
+        if (itemId == R.id.nav_agenda_medico) {
+            return ListaConsultasMedicoActivity.class;
+        }
+
+        if (itemId == R.id.nav_anotacoes) {
+            return AnotacoesActivity.class;
+        }
+
+        if (itemId == R.id.nav_carteira) {
+            return CarteiraActivity.class;
         }
 
         if (itemId == R.id.nav_clinica) {

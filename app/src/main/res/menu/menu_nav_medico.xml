@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_agenda_medico"
-        android:icon="@drawable/ic_nav_consultas"
-        android:title="Agenda" />
-    <item
-        android:id="@+id/nav_clinica"
-        android:icon="@drawable/ic_nav_clinica"
-        android:title="Clínica" />
-    <item
-        android:id="@+id/nav_perfil"
-        android:icon="@drawable/ic_nav_perfil"
-        android:title="Perfil" />
+    <item android:id="@+id/nav_inicio" android:icon="@drawable/ic_nav_painel" android:title="Geral" />
+    <item android:id="@+id/nav_agenda_medico" android:icon="@drawable/ic_nav_consultas" android:title="Agenda" />
+    <item android:id="@+id/nav_anotacoes" android:icon="@drawable/ic_nav_anotacoes" android:title="Pacientes" />
+    <item android:id="@+id/nav_carteira" android:icon="@drawable/ic_nav_carteira" android:title="Carteira" />
+    <item android:id="@+id/nav_perfil" android:icon="@drawable/ic_nav_perfil" android:title="Perfil" />
 </menu>

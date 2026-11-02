@@ -86,6 +86,12 @@
                 android:visibility="gone" />
 
             <Button
+                android:id="@+id/btnVerClinica"
+                style="@style/Botao.Contorno"
+                android:layout_marginTop="16dp"
+                android:text="Endereço da clínica" />
+
+            <Button
                 android:id="@+id/btnSairConta"
                 style="@style/Botao.Perigo"
                 android:layout_marginTop="20dp"

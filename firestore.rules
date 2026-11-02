@@ -23,10 +23,20 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
-    // Login consulta medicos/{uid} para definir o perfil; só admin altera.
+    // Login consulta medicos/{uid} para definir o perfil; só admin cadastra/autoriza.
+    // O próprio médico só pode alterar o status "online" e a apresentação (bio).
     match /medicos/{medicoId} {
       allow read: if logado();
-      allow create, update, delete: if admin();
+      allow create, delete: if admin();
+      allow update: if admin()
+        || (logado() && request.auth.uid == medicoId
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['online', 'bio']));
+    }
+
+    // Prontuário: anotações visíveis e editáveis apenas pelo médico que as criou.
+    match /anotacoes/{doc} {
+      allow read, update, delete: if medicoAutorizado() && resource.data.medicoId == request.auth.uid;
+      allow create: if medicoAutorizado() && request.resource.data.medicoId == request.auth.uid;
     }
 
     // Agenda precisa ver horários ocupados de todos os pacientes.

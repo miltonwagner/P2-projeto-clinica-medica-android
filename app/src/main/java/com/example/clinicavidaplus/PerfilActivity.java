@@ -54,6 +54,8 @@ public class PerfilActivity extends AppCompatActivity {
             carregarDados("pacientes", usuario.getUid());
         }
 
+        findViewById(R.id.btnVerClinica).setOnClickListener(v ->
+                startActivity(new android.content.Intent(this, EnderecoActivity.class)));
         findViewById(R.id.btnSairConta).setOnClickListener(v -> Sessao.sair(this));
     }
 

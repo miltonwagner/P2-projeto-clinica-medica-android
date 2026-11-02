@@ -135,7 +135,8 @@ public final class Tela {
                 || chave.contains("bloque")) {
             fundo = R.drawable.bg_badge_perigo;
             cor = R.color.perigo;
-        } else if (chave.contains("pend") || chave.contains("aguard")) {
+        } else if (chave.contains("pend") || chave.contains("aguard")
+                || chave.contains("agendad")) {
             fundo = R.drawable.bg_badge_aviso;
             cor = R.color.aviso;
         }
@@ -155,5 +156,68 @@ public final class Tela {
         etiqueta.setLayoutParams(parametros);
 
         return etiqueta;
+    }
+
+    /** Círculo com a inicial do nome (avatar). */
+    public static TextView avatar(Context contexto, String letra, int tamanhoDp) {
+        TextView avatar = new TextView(contexto);
+        avatar.setText(letra);
+        avatar.setGravity(android.view.Gravity.CENTER);
+        avatar.setBackgroundResource(R.drawable.bg_avatar);
+        avatar.setTextColor(ContextCompat.getColor(contexto, R.color.primaria_escura));
+        avatar.setTypeface(null, android.graphics.Typeface.BOLD);
+        avatar.setTextSize(tamanhoDp * 0.4f);
+        avatar.setLayoutParams(new LinearLayout.LayoutParams(dp(contexto, tamanhoDp), dp(contexto, tamanhoDp)));
+        return avatar;
+    }
+
+    /** Linha horizontal centralizada verticalmente. */
+    public static LinearLayout linha(Context contexto) {
+        LinearLayout linha = new LinearLayout(contexto);
+        linha.setOrientation(LinearLayout.HORIZONTAL);
+        linha.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        linha.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        return linha;
+    }
+
+    /** Coluna vertical que ocupa o espaço restante de uma linha. */
+    public static LinearLayout coluna(Context contexto, int margemInicioDp) {
+        LinearLayout coluna = new LinearLayout(contexto);
+        coluna.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        parametros.setMarginStart(dp(contexto, margemInicioDp));
+        coluna.setLayoutParams(parametros);
+        return coluna;
+    }
+
+    /** Botão compacto (40dp) para ações dentro de cards. */
+    public static android.widget.Button botao(Context contexto, String texto, boolean primario) {
+        android.widget.Button botao = new android.widget.Button(contexto);
+        botao.setText(texto);
+        botao.setAllCaps(false);
+        botao.setTextSize(14);
+        botao.setTypeface(null, android.graphics.Typeface.BOLD);
+        botao.setStateListAnimator(null);
+        botao.setMinHeight(0);
+        botao.setMinimumHeight(0);
+        botao.setBackgroundResource(primario ? R.drawable.bg_botao_primario : R.drawable.bg_botao_secundario);
+        botao.setTextColor(ContextCompat.getColor(contexto, primario ? R.color.white : R.color.primaria_escura));
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                0, dp(contexto, 40), 1f);
+        botao.setLayoutParams(parametros);
+        return botao;
+    }
+
+    /** Ajusta um texto para ocupar só o tamanho do conteúdo. */
+    public static TextView compacto(TextView texto) {
+        texto.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        return texto;
     }
 }

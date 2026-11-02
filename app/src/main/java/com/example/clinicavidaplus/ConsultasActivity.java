@@ -27,6 +27,13 @@ import java.util.Map;
 
 public class ConsultasActivity extends AppCompatActivity {
 
+    /** Nome do médico escolhido no marketplace (pré-seleciona o formulário). */
+    public static final String EXTRA_MEDICO_NOME = "medico_pre_selecionado";
+    private static final String SELECIONE_MEDICO = "Selecione o Médico";
+
+    private final List<String> nomesMedicos = new ArrayList<>();
+    private final Map<String, Medico> medicosPorNome = new HashMap<>();
+
     private Spinner spinnerMedicos, spinnerEspecialidades;
     private TextView txtData;
     private GridLayout grid;
@@ -54,24 +61,9 @@ public class ConsultasActivity extends AppCompatActivity {
             txtData = findViewById(R.id.txtDataSelecionada);
             grid = findViewById(R.id.gridHorarios);
 
-            String[] medicos = {
-                    "Selecione o Médico",
-                    "Dr. Arnaldo Silva",
-                    "Dra. Juliana Costa",
-                    "Dr. Roberto Souza"
-            };
+            configurarMedicos();
 
-            ArrayAdapter<String> adapterMed = new ArrayAdapter<>(
-                    this,
-                    android.R.layout.simple_spinner_item,
-                    medicos
-            );
-            adapterMed.setDropDownViewResource(
-                    android.R.layout.simple_spinner_dropdown_item
-            );
-            spinnerMedicos.setAdapter(adapterMed);
-
-            NavegacaoInferior.configurar(this, R.id.nav_agendar);
+            NavegacaoInferior.configurar(this, R.id.nav_inicio);
 
             findViewById(R.id.btnSelecionarData).setOnClickListener(v -> {
                 Calendar c = Calendar.getInstance();
@@ -105,6 +97,7 @@ public class ConsultasActivity extends AppCompatActivity {
                                 long id
                         ) {
                             horaF = "";
+                            selecionarEspecialidadeDoMedico();
                             if (!dataF.isEmpty()) {
                                 carregarHorariosDisponiveis();
                             } else if (grid != null) {
@@ -138,7 +131,88 @@ public class ConsultasActivity extends AppCompatActivity {
         }
     }
 
+    /** Lista os médicos da clínica (Firestore, com o catálogo como reserva). */
+    private void configurarMedicos() {
+        preencherMedicos(Medico.padroes());
+
+        String preSelecionado = getIntent().getStringExtra(EXTRA_MEDICO_NOME);
+        selecionarMedico(preSelecionado);
+
+        db.collection("medicos")
+                .get()
+                .addOnSuccessListener(resultado -> {
+                    if (resultado.isEmpty()) {
+                        return;
+                    }
+
+                    Object atual = spinnerMedicos.getSelectedItem();
+                    List<Medico> lista = new ArrayList<>();
+
+                    for (DocumentSnapshot documento : resultado.getDocuments()) {
+                        lista.add(Medico.de(documento));
+                    }
+
+                    preencherMedicos(lista);
+                    selecionarMedico(atual == null ? preSelecionado : atual.toString());
+                });
+    }
+
+    private void preencherMedicos(List<Medico> lista) {
+        nomesMedicos.clear();
+        medicosPorNome.clear();
+        nomesMedicos.add(SELECIONE_MEDICO);
+
+        for (Medico medico : lista) {
+            nomesMedicos.add(medico.nome);
+            medicosPorNome.put(medico.nome, medico);
+        }
+
+        ArrayAdapter<String> adapterMed = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new ArrayList<>(nomesMedicos)
+        );
+        adapterMed.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        spinnerMedicos.setAdapter(adapterMed);
+    }
+
+    private void selecionarMedico(String nome) {
+        int posicao = nome == null ? -1 : nomesMedicos.indexOf(nome);
+
+        if (posicao > 0) {
+            spinnerMedicos.setSelection(posicao);
+            selecionarEspecialidadeDoMedico();
+        }
+    }
+
+    /** A especialidade acompanha o médico escolhido. */
+    private void selecionarEspecialidadeDoMedico() {
+        Object selecionado = spinnerMedicos.getSelectedItem();
+        Medico medico = selecionado == null ? null : medicosPorNome.get(selecionado.toString());
+
+        if (medico == null) {
+            return;
+        }
+
+        String[] especialidades = getResources().getStringArray(R.array.especialidades_array);
+
+        for (int i = 0; i < especialidades.length; i++) {
+            if (especialidades[i].equalsIgnoreCase(medico.especialidade)) {
+                spinnerEspecialidades.setSelection(i);
+                return;
+            }
+        }
+    }
+
     private String obterMedicoId(String medico) {
+        Medico encontrado = medicosPorNome.get(medico);
+
+        if (encontrado != null) {
+            return encontrado.id;
+        }
+
         if ("Dr. Arnaldo Silva".equals(medico)) {
             return MEDICO_ARNALDO_ID;
         }
@@ -161,7 +235,7 @@ public class ConsultasActivity extends AppCompatActivity {
 
         String medico = spinnerMedicos.getSelectedItem().toString();
 
-        if (dataF.isEmpty() || "Selecione o Médico".equals(medico)) {
+        if (dataF.isEmpty() || SELECIONE_MEDICO.equals(medico)) {
             grid.removeAllViews();
             return;
         }
@@ -348,7 +422,7 @@ public class ConsultasActivity extends AppCompatActivity {
                 : spinnerEspecialidades.getSelectedItem().toString();
 
         if (medico.isEmpty()
-                || "Selecione o Médico".equals(medico)
+                || SELECIONE_MEDICO.equals(medico)
                 || especialidade.isEmpty()
                 || dataF.isEmpty()
                 || horaF.isEmpty()) {

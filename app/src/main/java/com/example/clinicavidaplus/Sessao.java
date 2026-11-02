@@ -58,10 +58,10 @@ public final class Sessao {
         }
 
         if (PERFIL_MEDICO.equals(perfil)) {
-            return ListaConsultasMedicoActivity.class;
+            return DashboardMedicoActivity.class;
         }
 
-        return ListaConsultasActivity.class;
+        return MarketplaceActivity.class;
     }
 
     /**
