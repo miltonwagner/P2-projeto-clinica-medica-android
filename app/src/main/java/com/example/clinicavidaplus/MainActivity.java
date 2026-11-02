@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                 if (numeros.length() > 4) {
                     dataFormatada.append("/");
                     dataFormatada.append(
-                            numeros.substring(4, 8)
+                            numeros.substring(4, Math.min(8, numeros.length()))
                     );
                 }
 
