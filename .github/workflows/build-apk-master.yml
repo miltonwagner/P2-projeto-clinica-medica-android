@@ -1,0 +1,64 @@
+name: Build APK (master)
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-master
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAG: apk-master
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Restaurar google-services.json e keystore de debug
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
+        run: |
+          echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+          mkdir -p ~/.android
+          echo "$DEBUG_KEYSTORE" | base64 -d > ~/.android/debug.keystore
+
+      - name: Compilar APK debug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Renomear APK
+        run: |
+          SHORT=$(git rev-parse --short HEAD)
+          cp app/build/outputs/apk/debug/app-debug.apk "ClinicaVidaPlus.apk"
+          echo "SHORT=$SHORT" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ClinicaVidaPlus-${{ env.SHORT }}
+          path: ClinicaVidaPlus.apk
+
+      - name: Publicar Release (link fixo para o celular)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete "$TAG" --cleanup-tag -y || true
+          gh release create "$TAG" ClinicaVidaPlus.apk \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "APK master (${SHORT})" \
+            --notes "Build automatico da branch master, commit ${SHORT}. Baixar: ClinicaVidaPlus.apk"
