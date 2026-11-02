@@ -76,6 +76,52 @@ public class MarketplaceActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mostrarAvisoFila();
+    }
+
+    /** Paciente numa fila ao vivo: atalho para acompanhar a posição. */
+    private void mostrarAvisoFila() {
+        LinearLayout aviso = findViewById(R.id.containerAvisoFila);
+        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
+        aviso.removeAllViews();
+
+        if (usuario == null || !Sessao.PERFIL_PACIENTE.equals(Sessao.perfil(this))) {
+            return;
+        }
+
+        FirebaseFirestore.getInstance()
+                .collection(EntradaFila.COLECAO)
+                .whereEqualTo("pacienteId", usuario.getUid())
+                .whereIn("status", Arrays.asList(EntradaFila.AGUARDANDO, EntradaFila.EM_ATENDIMENTO))
+                .get()
+                .addOnSuccessListener(resultado -> {
+                    aviso.removeAllViews();
+                    if (resultado.isEmpty()) {
+                        return;
+                    }
+
+                    EntradaFila entrada = new EntradaFila(resultado.getDocuments().get(0));
+                    LinearLayout card = Tela.card(this);
+                    card.setBackgroundResource(R.drawable.bg_status_online);
+                    card.setPadding(Tela.dp(this, 18), Tela.dp(this, 14), Tela.dp(this, 18), Tela.dp(this, 14));
+                    ((LinearLayout.LayoutParams) card.getLayoutParams()).topMargin = Tela.dp(this, 14);
+                    card.addView(Tela.texto(this, entrada.emAtendimento()
+                            ? "● É a sua vez com " + entrada.medico
+                            : "● Você está na fila de " + entrada.medico, R.style.Texto_CardTitulo, 0));
+                    card.addView(Tela.texto(this, "Toque para acompanhar sua posição",
+                            R.style.Texto_Pequeno, 2));
+                    card.setOnClickListener(v -> {
+                        Intent intent = new Intent(this, FilaActivity.class);
+                        intent.putExtra(FilaActivity.EXTRA_MEDICO_ID, entrada.medicoId);
+                        startActivity(intent);
+                    });
+                    aviso.addView(card);
+                });
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
@@ -208,8 +254,8 @@ public class MarketplaceActivity extends AppCompatActivity {
             filtrados.sort((a, b) -> Double.compare(b.avaliacao, a.avaliacao));
         } else {
             filtrados.sort((a, b) -> {
-                if (a.online != b.online) {
-                    return a.online ? -1 : 1;
+                if (a.aoVivoAgora() != b.aoVivoAgora()) {
+                    return a.aoVivoAgora() ? -1 : 1;
                 }
                 return Double.compare(b.avaliacao, a.avaliacao);
             });
@@ -271,11 +317,13 @@ public class MarketplaceActivity extends AppCompatActivity {
         preco.addView(valor);
         preco.addView(Tela.compacto(Tela.texto(this, "por consulta", R.style.Texto_Pequeno, 0)));
 
-        if (medico.online) {
-            TextView online = Tela.compacto(Tela.texto(this, "● Atendendo", R.style.Texto_Pequeno, 6));
+        if (medico.aoVivoAgora()) {
+            TextView online = Tela.compacto(Tela.texto(this, "● Ao vivo agora", R.style.Texto_Pequeno, 6));
             online.setTextColor(ContextCompat.getColor(this, R.color.sucesso));
             online.setTypeface(null, android.graphics.Typeface.BOLD);
             preco.addView(online);
+        } else if (!medico.aceitaAgendamento()) {
+            preco.addView(Tela.compacto(Tela.texto(this, "Só ao vivo", R.style.Texto_Pequeno, 6)));
         }
 
         card.addView(preco);

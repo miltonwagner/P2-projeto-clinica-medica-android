@@ -16,6 +16,7 @@ public class Consulta {
     public static final String CONCLUIDO = "Concluído";
     public static final String RECUSADO = "Recusado";
     public static final String CANCELADO = "Cancelado";
+    public static final String EM_ATENDIMENTO = "Em atendimento";
 
     public final String id;
     public final String medico;
@@ -26,6 +27,10 @@ public class Consulta {
     public final String horario;
     public final String status;
     public final long momento;
+    public final String modalidade;
+    public final String motivo;
+    public final String pacienteNome;
+    public final String telefone;
 
     public Consulta(DocumentSnapshot documento) {
         id = documento.getId();
@@ -38,6 +43,10 @@ public class Consulta {
         String valorStatus = texto(documento, "status");
         status = valorStatus.isEmpty() ? AGENDADO : valorStatus;
         momento = converter(data, horario);
+        modalidade = texto(documento, "modalidade");
+        motivo = texto(documento, "motivo");
+        pacienteNome = texto(documento, "pacienteNome");
+        telefone = texto(documento, "telefone");
     }
 
     private static String texto(DocumentSnapshot documento, String campo) {
@@ -65,6 +74,21 @@ public class Consulta {
 
     public boolean confirmada() {
         return eh(CONFIRMADO);
+    }
+
+    public boolean emAtendimento() {
+        return eh(EM_ATENDIMENTO);
+    }
+
+    public boolean hoje() {
+        if (momento == 0) {
+            return false;
+        }
+        Calendar agora = Calendar.getInstance();
+        Calendar quando = Calendar.getInstance();
+        quando.setTimeInMillis(momento);
+        return agora.get(Calendar.YEAR) == quando.get(Calendar.YEAR)
+                && agora.get(Calendar.DAY_OF_YEAR) == quando.get(Calendar.DAY_OF_YEAR);
     }
 
     public boolean concluida() {
@@ -104,6 +128,10 @@ public class Consulta {
     public String statusParaPaciente() {
         if (pendente()) {
             return "Aguardando confirmação";
+        }
+
+        if (emAtendimento()) {
+            return "Em atendimento agora";
         }
 
         return status;

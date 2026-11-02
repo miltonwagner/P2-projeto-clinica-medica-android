@@ -84,5 +84,8 @@
         <activity
             android:name=".AgendarActivity"
             android:exported="false" />
+        <activity
+            android:name=".FilaActivity"
+            android:exported="false" />
   </application>
 </manifest>

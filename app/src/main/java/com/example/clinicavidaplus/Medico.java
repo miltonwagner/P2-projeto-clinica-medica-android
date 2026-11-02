@@ -23,6 +23,12 @@ public class Medico implements Serializable {
     public double avaliacao;
     public int avaliacoes;
     public boolean online;
+    /** Como atende: "aovivo", "agendamento" ou "ambos". */
+    public String atendimento = AGENDAMENTO;
+
+    public static final String AO_VIVO = "aovivo";
+    public static final String AGENDAMENTO = "agendamento";
+    public static final String AMBOS = "ambos";
 
     private Medico(
             String id,
@@ -114,12 +120,29 @@ public class Medico implements Serializable {
         }
 
         medico.online = Boolean.TRUE.equals(documento.getBoolean("online"));
+        String modo = documento.getString("atendimento");
+        if (AO_VIVO.equals(modo) || AMBOS.equals(modo) || AGENDAMENTO.equals(modo)) {
+            medico.atendimento = modo;
+        }
         return medico;
     }
 
     private static String texto(DocumentSnapshot documento, String campo, String padrao) {
         String valor = documento.getString(campo);
         return valor == null || valor.trim().isEmpty() ? padrao : valor.trim();
+    }
+
+    public boolean aceitaAoVivo() {
+        return AO_VIVO.equals(atendimento) || AMBOS.equals(atendimento);
+    }
+
+    public boolean aceitaAgendamento() {
+        return AGENDAMENTO.equals(atendimento) || AMBOS.equals(atendimento);
+    }
+
+    /** Fila ao vivo aberta: o paciente pode entrar agora. */
+    public boolean aoVivoAgora() {
+        return online && aceitaAoVivo();
     }
 
     public String inicial() {

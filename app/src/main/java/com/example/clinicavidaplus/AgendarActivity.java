@@ -141,6 +141,12 @@ public class AgendarActivity extends AppCompatActivity {
     }
 
     private void definirMedico(Medico escolhido) {
+        if (!escolhido.aceitaAgendamento()) {
+            Toast.makeText(this, escolhido.nome + " atende só ao vivo, pela fila.",
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         medico = escolhido;
         ((TextView) findViewById(R.id.txtMedicoAgendar)).setText(
                 "com " + medico.nome + " · " + medico.especialidade);

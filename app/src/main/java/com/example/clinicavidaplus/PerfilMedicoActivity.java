@@ -2,6 +2,7 @@ package com.example.clinicavidaplus;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import androidx.core.content.ContextCompat;
 
 /** Perfil público do médico, aberto a partir do marketplace. */
 public class PerfilMedicoActivity extends AppCompatActivity {
+
+    private com.google.firebase.firestore.ListenerRegistration ouvinte;
 
     public static final String EXTRA_MEDICO = "medico_marketplace";
 
@@ -35,8 +38,17 @@ public class PerfilMedicoActivity extends AppCompatActivity {
                 medico.avaliacoes == 0
                         ? medico.avaliacaoTexto()
                         : medico.avaliacaoTexto().replace("(", "· ").replace(")", " avaliações"));
-        ((TextView) findViewById(R.id.txtEspecialidadeTag)).setText(
-                medico.online ? medico.especialidade + "  ·  ● Atendendo agora" : medico.especialidade);
+        mostrarDisponibilidade(medico);
+        ouvinte = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("medicos").document(medico.id)
+                .addSnapshotListener((documento, erro) -> {
+                    if (documento != null && documento.exists()) {
+                        Medico atual = Medico.de(documento);
+                        medico.online = atual.online;
+                        medico.atendimento = atual.atendimento;
+                        mostrarDisponibilidade(medico);
+                    }
+                });
         ((TextView) findViewById(R.id.txtBioMedico)).setText(medico.bio);
 
         LinearLayout planos = findViewById(R.id.containerPlanosMedico);
@@ -46,6 +58,21 @@ public class PerfilMedicoActivity extends AppCompatActivity {
                 "em até 30 dias após a consulta", false));
 
         findViewById(R.id.btnVoltarPerfilMedico).setOnClickListener(v -> finish());
+
+        findViewById(R.id.btnFilaAoVivo).setOnClickListener(v -> {
+            if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+                Sessao.guardarAgendamentoPendente(this, Sessao.PREFIXO_FILA + medico.id);
+                android.widget.Toast.makeText(this,
+                        "Entre ou crie sua conta para entrar na fila.",
+                        android.widget.Toast.LENGTH_LONG).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                return;
+            }
+
+            Intent intent = new Intent(this, FilaActivity.class);
+            intent.putExtra(FilaActivity.EXTRA_MEDICO, medico);
+            startActivity(intent);
+        });
 
         findViewById(R.id.btnAgendarComMedico).setOnClickListener(v -> {
             if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
@@ -62,6 +89,38 @@ public class PerfilMedicoActivity extends AppCompatActivity {
             intent.putExtra(AgendarActivity.EXTRA_MEDICO, medico);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (ouvinte != null) {
+            ouvinte.remove();
+        }
+    }
+
+    private void mostrarDisponibilidade(Medico medico) {
+        boolean aoVivo = medico.aoVivoAgora();
+        ((TextView) findViewById(R.id.txtEspecialidadeTag)).setText(
+                aoVivo ? medico.especialidade + "  ·  ● Ao vivo agora" : medico.especialidade);
+
+        String texto;
+        if (aoVivo && medico.aceitaAgendamento()) {
+            texto = "Atendendo ao vivo agora · também aceita agendamento";
+        } else if (aoVivo) {
+            texto = "Atende só ao vivo, por ordem de chegada";
+        } else if (medico.aceitaAoVivo() && medico.aceitaAgendamento()) {
+            texto = "Fila ao vivo fechada no momento · agende um horário";
+        } else if (medico.aceitaAoVivo()) {
+            texto = "Atende só ao vivo · fila fechada no momento";
+        } else {
+            texto = "Atendimento somente com horário marcado";
+        }
+        ((TextView) findViewById(R.id.txtDisponibilidadeMedico)).setText(texto);
+
+        findViewById(R.id.btnFilaAoVivo).setVisibility(aoVivo ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btnAgendarComMedico).setVisibility(
+                medico.aceitaAgendamento() ? View.VISIBLE : View.GONE);
     }
 
     private LinearLayout plano(String titulo, String valor, String detalhe, boolean destaque) {

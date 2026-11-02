@@ -31,7 +31,7 @@ service cloud.firestore {
       allow create, delete: if admin();
       allow update: if admin()
         || (logado() && request.auth.uid == medicoId
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['online', 'bio']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['online', 'bio', 'atendimento']));
     }
 
     // Prontuário: anotações visíveis e editáveis apenas pelo médico que as criou.
@@ -41,6 +41,20 @@ service cloud.firestore {
     }
 
     // Agenda precisa ver horários ocupados de todos os pacientes.
+    // Fila ao vivo: o paciente entra/sai; o médico da fila chama e finaliza.
+    // Não guarda nome nem motivo, pois a posição é calculada lendo a fila.
+    match /fila/{doc} {
+      allow read: if logado();
+      allow create: if logado()
+        && request.resource.data.pacienteId == request.auth.uid
+        && request.resource.data.status == 'aguardando';
+      allow update: if logado() && (
+        (resource.data.medicoId == request.auth.uid && medicoAutorizado())
+        || (resource.data.pacienteId == request.auth.uid
+            && request.resource.data.status == 'cancelado'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])));
+    }
+
     match /agendamentos/{doc} {
       allow read, write: if logado();
     }

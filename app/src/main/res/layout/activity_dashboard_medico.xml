@@ -20,25 +20,93 @@
             android:paddingBottom="24dp">
 
             <TextView
+                android:id="@+id/txtBoasVindasMedico"
                 style="@style/Texto.Titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:text="Visão geral" />
+                android:text="Bem-vindo(a)" />
 
             <TextView
-                android:id="@+id/txtBoasVindasMedico"
                 style="@style/Texto.Subtitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Carregando..." />
+                android:text="Sua fila, agenda e pendências em um só lugar" />
 
+            <!-- Como o médico atende -->
+            <LinearLayout
+                style="@style/Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp">
+
+                <TextView
+                    style="@style/Texto.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Como você atende" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/pilulaAoVivo"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_pilula"
+                        android:gravity="center"
+                        android:text="Ao vivo"
+                        android:textColor="@color/pilula_texto"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pilulaAgendamento"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1.25"
+                        android:background="@drawable/bg_pilula"
+                        android:gravity="center"
+                        android:text="Agendamento"
+                        android:textColor="@color/pilula_texto"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pilulaAmbos"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_pilula"
+                        android:gravity="center"
+                        android:text="Os dois"
+                        android:textColor="@color/pilula_texto"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtModoDetalhe"
+                    style="@style/Texto.Pequeno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+
+            <!-- Status ao vivo -->
             <LinearLayout
                 android:id="@+id/cardStatusOnline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="14dp"
                 android:background="@drawable/bg_status_offline"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -62,15 +130,14 @@
                         style="@style/Texto.CardTitulo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Você está offline" />
+                        android:text="Fila ao vivo fechada" />
 
                     <TextView
                         android:id="@+id/txtStatusOnlineDetalhe"
                         style="@style/Texto.Pequeno"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Ative para aparecer como atendendo no app" />
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
 
                 <com.google.android.material.materialswitch.MaterialSwitch
@@ -86,11 +153,54 @@
                 android:layout_marginTop="16dp"
                 android:orientation="vertical" />
 
+            <LinearLayout
+                android:id="@+id/secaoEmAtendimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Texto.Secao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Em atendimento" />
+
+                <LinearLayout
+                    android:id="@+id/containerEmAtendimento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
             <TextView
                 style="@style/Texto.Secao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
+                android:text="Fila de hoje" />
+
+            <TextView
+                android:id="@+id/txtResumoFila"
+                style="@style/Texto.Pequeno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+            <LinearLayout
+                android:id="@+id/containerFila"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical" />
+
+            <TextView
+                style="@style/Texto.Secao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Aguardando confirmação" />
 
             <LinearLayout
@@ -104,7 +214,7 @@
                 style="@style/Texto.Secao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:text="Próximas consultas" />
 
             <LinearLayout

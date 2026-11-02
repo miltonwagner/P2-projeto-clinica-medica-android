@@ -29,6 +29,8 @@ public final class Sessao {
     private static final String PREFERENCIAS = "sessao_vidaplus";
     private static final String CHAVE_PERFIL = "perfil";
     private static final String CHAVE_AGENDAR_MEDICO = "agendar_medico";
+    /** Pendência de entrar na fila ao vivo (em vez de agendar). */
+    public static final String PREFIXO_FILA = "fila:";
 
     private Sessao() {
     }
@@ -210,9 +212,16 @@ public final class Sessao {
 
         if (PERFIL_PACIENTE.equals(perfil) && medicoPendente != null) {
             // Continua o agendamento iniciado antes do login.
-            Intent agendar = new Intent(activity, AgendarActivity.class);
-            agendar.putExtra(AgendarActivity.EXTRA_MEDICO_ID, medicoPendente);
-            activity.startActivities(new Intent[]{intent, agendar});
+            Intent continuar;
+            if (medicoPendente.startsWith(PREFIXO_FILA)) {
+                continuar = new Intent(activity, FilaActivity.class);
+                continuar.putExtra(FilaActivity.EXTRA_MEDICO_ID,
+                        medicoPendente.substring(PREFIXO_FILA.length()));
+            } else {
+                continuar = new Intent(activity, AgendarActivity.class);
+                continuar.putExtra(AgendarActivity.EXTRA_MEDICO_ID, medicoPendente);
+            }
+            activity.startActivities(new Intent[]{intent, continuar});
         } else {
             activity.startActivity(intent);
         }
