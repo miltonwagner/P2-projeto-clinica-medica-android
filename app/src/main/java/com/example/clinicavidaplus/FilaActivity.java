@@ -209,8 +209,11 @@ public class FilaActivity extends AppCompatActivity {
         } else if (minhaEntrada.emAtendimento()) {
             resumo.addView(destaque("●", "É a sua vez!",
                     medico.nome + " iniciou o seu atendimento agora."));
-            container.addView(info("A videochamada pelo app ainda está em construção. "
-                    + "Mantenha o telefone do cadastro por perto."));
+            Button video = Tela.botao(this, "Entrar na videochamada", true);
+            video.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_video, 0, 0, 0);
+            video.setOnClickListener(v -> Videochamada.entrar(this, minhaEntrada.id, nomePaciente()));
+            container.addView(video);
+            container.addView(info("Permita câmera e microfone quando o app pedir."));
         } else if (EntradaFila.ATENDIDO.equals(minhaEntrada.status)) {
             resumo.addView(destaque("✓", "Atendimento finalizado",
                     "Obrigado por usar a Vida Plus."));
@@ -220,6 +223,14 @@ public class FilaActivity extends AppCompatActivity {
                     "Entre de novo pelo perfil do médico quando quiser."));
             container.addView(botaoInicio());
         }
+    }
+
+    private String nomePaciente() {
+        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
+        if (usuario != null && usuario.getDisplayName() != null && !usuario.getDisplayName().isEmpty()) {
+            return usuario.getDisplayName();
+        }
+        return "Paciente";
     }
 
     private void mostrarFechada() {

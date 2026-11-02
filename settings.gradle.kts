@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // SDK do Jitsi Meet (videochamada das consultas)
+        maven { url = uri("https://github.com/jitsi/jitsi-maven-repository/raw/master/releases") }
     }
 }
 

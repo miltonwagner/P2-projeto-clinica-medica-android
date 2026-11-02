@@ -397,9 +397,19 @@ public class DashboardMedicoActivity extends AppCompatActivity {
             }
         }
 
+        if (item.aoVivo != null || !"Presencial".equalsIgnoreCase(item.agendada.modalidade)) {
+            Button video = Tela.botao(this, "Entrar na videochamada", true);
+            video.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_video, 0, 0, 0);
+            ((LinearLayout.LayoutParams) video.getLayoutParams()).topMargin = Tela.dp(this, 14);
+            video.setOnClickListener(v -> Videochamada.entrar(this,
+                    item.aoVivo != null ? item.aoVivo.id : item.agendada.id,
+                    medico != null ? medico.nome : "Médico"));
+            card.addView(video);
+        }
+
         LinearLayout botoes = Tela.linha(this);
         botoes.setPadding(0, Tela.dp(this, 14), 0, 0);
-        Button finalizar = Tela.botao(this, "Finalizar", true);
+        Button finalizar = Tela.botao(this, "Finalizar", false);
         Button prontuario = Tela.botao(this, "Prontuário", false);
         ((LinearLayout.LayoutParams) prontuario.getLayoutParams()).setMarginStart(Tela.dp(this, 10));
         botoes.addView(finalizar);

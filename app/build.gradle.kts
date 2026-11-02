@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.clinicavidaplus"
-        minSdk = 24
+        minSdk = 26 // SDK do Jitsi exige Android 8+
         targetSdk = 36
         // No GitHub Actions: versionCode crescente e o canal (release) que o app consulta.
         val codigoCi = (findProperty("versionCodeCi") as String?)?.toIntOrNull()
@@ -71,6 +71,9 @@ dependencies {
     // JavaMail para envio de e-mail
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
+
+    // Videochamada das consultas (Jitsi Meet)
+    implementation("org.jitsi.react:jitsi-meet-sdk:13.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

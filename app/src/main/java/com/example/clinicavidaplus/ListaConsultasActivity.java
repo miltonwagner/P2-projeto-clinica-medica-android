@@ -115,6 +115,17 @@ public class ListaConsultasActivity extends AppCompatActivity {
                 12
         ));
 
+        String modalidade = documento.getString("modalidade");
+        if ("Em atendimento".equals(status) && !"Presencial".equalsIgnoreCase(modalidade)) {
+            Button video = Tela.botao(this, "Entrar na videochamada", true);
+            video.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_video, 0, 0, 0);
+            ((LinearLayout.LayoutParams) video.getLayoutParams()).topMargin = Tela.dp(this, 14);
+            String nome = documento.getString("pacienteNome");
+            video.setOnClickListener(v -> Videochamada.entrar(this, documento.getId(),
+                    nome == null || nome.isEmpty() ? "Paciente" : nome));
+            cartao.addView(video);
+        }
+
         containerConsultas.addView(cartao);
     }
 
