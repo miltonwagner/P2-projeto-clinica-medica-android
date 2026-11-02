@@ -31,16 +31,8 @@ public class AgendamentoSucessoActivity extends AppCompatActivity {
                 NavegacaoInferior.abrirAba(this, ListaConsultasActivity.class));
 
         // Botão: Novo Agendamento
-        findViewById(R.id.btnNovoAgendamentoSucesso).setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    AgendamentoSucessoActivity.this,
-                    ConsultasActivity.class
-            );
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-            finish();
-        });
+        findViewById(R.id.btnNovoAgendamentoSucesso).setOnClickListener(v ->
+                NavegacaoInferior.irParaInicio(this));
 
         // Botão: Voltar
         // Voltar (botão ou gesto) leva às consultas, não ao formulário.

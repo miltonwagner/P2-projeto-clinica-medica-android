@@ -48,8 +48,18 @@ public class PerfilMedicoActivity extends AppCompatActivity {
         findViewById(R.id.btnVoltarPerfilMedico).setOnClickListener(v -> finish());
 
         findViewById(R.id.btnAgendarComMedico).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ConsultasActivity.class);
-            intent.putExtra(ConsultasActivity.EXTRA_MEDICO_NOME, medico.nome);
+            if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
+                // Visitante: entra ou se cadastra e volta direto para o agendamento.
+                Sessao.guardarAgendamentoPendente(this, medico.id);
+                android.widget.Toast.makeText(this,
+                        "Entre ou crie sua conta para concluir o agendamento.",
+                        android.widget.Toast.LENGTH_LONG).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                return;
+            }
+
+            Intent intent = new Intent(this, AgendarActivity.class);
+            intent.putExtra(AgendarActivity.EXTRA_MEDICO, medico);
             startActivity(intent);
         });
     }

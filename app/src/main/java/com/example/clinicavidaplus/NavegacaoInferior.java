@@ -31,8 +31,13 @@ public final class NavegacaoInferior {
             return;
         }
 
-        if (!logado || perfil == null) {
-            // Ex.: tela da clínica aberta antes do login.
+        if (!logado) {
+            configurarVisitante(activity, nav, itemAtual);
+            return;
+        }
+
+        if (perfil == null) {
+            // Ex.: cadastro Google ainda não concluído.
             nav.setVisibility(View.GONE);
             View divisor = activity.findViewById(R.id.divisorNavInferior);
             if (divisor != null) {
@@ -65,6 +70,44 @@ public final class NavegacaoInferior {
                     @Override
                     public void handleOnBackPressed() {
                         if (ehRaiz(activity, perfil)) {
+                            activity.moveTaskToBack(true);
+                        } else {
+                            activity.finish();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Visitante navega pelo marketplace; as demais abas pedem login.
+     */
+    private static void configurarVisitante(AppCompatActivity activity,
+                                            BottomNavigationView nav, int itemAtual) {
+        nav.getMenu().clear();
+        nav.inflateMenu(R.menu.menu_nav_paciente);
+
+        if (nav.getMenu().findItem(itemAtual) != null) {
+            nav.setSelectedItemId(itemAtual);
+        }
+
+        nav.setOnItemReselectedListener(item -> voltarParaRaizDaAba(activity, null, item.getItemId()));
+
+        nav.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_inicio) {
+                voltarParaRaizDaAba(activity, null, item.getItemId());
+                return item.getItemId() == itemAtual;
+            }
+
+            Sessao.descartarAgendamentoPendente(activity);
+            activity.startActivity(new Intent(activity, LoginActivity.class));
+            return false;
+        });
+
+        activity.getOnBackPressedDispatcher().addCallback(activity,
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (ehRaiz(activity, null)) {
                             activity.moveTaskToBack(true);
                         } else {
                             activity.finish();

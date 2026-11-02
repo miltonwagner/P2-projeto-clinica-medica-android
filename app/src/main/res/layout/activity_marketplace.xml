@@ -25,11 +25,35 @@
                 android:paddingTop="24dp"
                 android:paddingEnd="20dp">
 
-                <TextView
-                    style="@style/Texto.Titulo"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Encontrar médico" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Texto.Titulo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Encontrar médico" />
+
+                    <TextView
+                        android:id="@+id/btnEntrarMarketplace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_tag"
+                        android:drawableStart="@drawable/ic_nav_perfil"
+                        android:drawablePadding="6dp"
+                        android:gravity="center"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="14dp"
+                        android:text="Entrar"
+                        android:textColor="@color/primaria_escura"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/txtSaudacaoMarketplace"

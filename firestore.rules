@@ -26,7 +26,8 @@ service cloud.firestore {
     // Login consulta medicos/{uid} para definir o perfil; só admin cadastra/autoriza.
     // O próprio médico só pode alterar o status "online" e a apresentação (bio).
     match /medicos/{medicoId} {
-      allow read: if logado();
+      // Leitura pública: o marketplace aparece antes do login.
+      allow read: if true;
       allow create, delete: if admin();
       allow update: if admin()
         || (logado() && request.auth.uid == medicoId

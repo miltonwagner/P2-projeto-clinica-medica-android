@@ -78,15 +78,27 @@ public class MarketplaceActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Voltou ao início sem logar: esquece o agendamento iniciado.
+            Sessao.descartarAgendamentoPendente(this);
+        }
         carregarMedicos();
     }
 
     private void carregarSaudacao() {
         FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
+        View entrar = findViewById(R.id.btnEntrarMarketplace);
 
         if (usuario == null) {
+            entrar.setVisibility(View.VISIBLE);
+            entrar.setOnClickListener(v -> {
+                Sessao.descartarAgendamentoPendente(this);
+                startActivity(new Intent(this, LoginActivity.class));
+            });
             return;
         }
+
+        entrar.setVisibility(View.GONE);
 
         FirebaseFirestore.getInstance()
                 .collection("pacientes")

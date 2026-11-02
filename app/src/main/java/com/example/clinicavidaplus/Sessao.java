@@ -28,6 +28,7 @@ public final class Sessao {
     private static final String TAG = "Sessao";
     private static final String PREFERENCIAS = "sessao_vidaplus";
     private static final String CHAVE_PERFIL = "perfil";
+    private static final String CHAVE_AGENDAR_MEDICO = "agendar_medico";
 
     private Sessao() {
     }
@@ -49,6 +50,31 @@ public final class Sessao {
         }
 
         editor.apply();
+    }
+
+    /**
+     * Visitante escolheu um médico e tocou em "Agendar": guarda o médico
+     * para abrir o agendamento logo depois do login ou do cadastro.
+     */
+    public static void guardarAgendamentoPendente(Context contexto, String medicoId) {
+        contexto.getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE)
+                .edit()
+                .putString(CHAVE_AGENDAR_MEDICO, medicoId)
+                .apply();
+    }
+
+    public static void descartarAgendamentoPendente(Context contexto) {
+        contexto.getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE)
+                .edit()
+                .remove(CHAVE_AGENDAR_MEDICO)
+                .apply();
+    }
+
+    private static String retirarAgendamentoPendente(Context contexto) {
+        String medicoId = contexto.getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE)
+                .getString(CHAVE_AGENDAR_MEDICO, null);
+        descartarAgendamentoPendente(contexto);
+        return medicoId;
     }
 
     /** Tela inicial (raiz da navegação) de cada perfil. */
@@ -177,9 +203,20 @@ public final class Sessao {
     private static void abrirInicio(Activity activity, String perfil) {
         salvarPerfil(activity, perfil);
 
+        String medicoPendente = retirarAgendamentoPendente(activity);
+
         Intent intent = new Intent(activity, telaInicial(perfil));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
+
+        if (PERFIL_PACIENTE.equals(perfil) && medicoPendente != null) {
+            // Continua o agendamento iniciado antes do login.
+            Intent agendar = new Intent(activity, AgendarActivity.class);
+            agendar.putExtra(AgendarActivity.EXTRA_MEDICO_ID, medicoPendente);
+            activity.startActivities(new Intent[]{intent, agendar});
+        } else {
+            activity.startActivity(intent);
+        }
+
         activity.finish();
     }
 
@@ -190,9 +227,10 @@ public final class Sessao {
         salvarPerfil(contexto, null);
     }
 
-    /** Logout completo: volta para a tela inicial do app, sem histórico. */
+    /** Logout completo: volta para o marketplace como visitante, sem histórico. */
     public static void sair(Activity activity) {
         encerrar(activity);
+        descartarAgendamentoPendente(activity);
 
         Intent intent = new Intent(activity, IndexActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

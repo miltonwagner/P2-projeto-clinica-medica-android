@@ -81,5 +81,8 @@
         <activity
             android:name=".CarteiraActivity"
             android:exported="false" />
+        <activity
+            android:name=".AgendarActivity"
+            android:exported="false" />
   </application>
 </manifest>
