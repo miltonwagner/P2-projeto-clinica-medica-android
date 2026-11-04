@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Mapa © OpenStreetMap contributors © CARTO"
+                android:text="Mapa © colaboradores do OpenStreetMap"
                 android:textColor="@color/texto_claro"
                 android:textSize="11sp" />
 

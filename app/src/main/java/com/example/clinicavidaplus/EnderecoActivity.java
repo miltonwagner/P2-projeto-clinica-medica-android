@@ -27,8 +27,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -49,14 +48,6 @@ public class EnderecoActivity extends AppCompatActivity {
     private static final GeoPoint CLINICA = new GeoPoint(-23.0887583, -47.2159389);
     private static final long INTERVALO_GPS_MS = 3000;
 
-    /** Mapa base CARTO "Voyager": dados do OpenStreetMap, livre para apps sem chave (com atribuição). */
-    private static final OnlineTileSourceBase MAPA_CARTO = new XYTileSource("CartoVoyager", 0, 20, 256, ".png",
-            new String[]{
-                    "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
-                    "https://b.basemaps.cartocdn.com/rastertiles/voyager/",
-                    "https://c.basemaps.cartocdn.com/rastertiles/voyager/",
-                    "https://d.basemaps.cartocdn.com/rastertiles/voyager/"},
-            "© OpenStreetMap contributors © CARTO");
 
     private MapView mapa;
     private Marker marcadorUsuario;
@@ -120,7 +111,7 @@ public class EnderecoActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void configurarMapa() {
         mapa = findViewById(R.id.mapaClinica);
-        mapa.setTileSource(MAPA_CARTO);
+        mapa.setTileSource(TileSourceFactory.MAPNIK);
         mapa.setMultiTouchControls(true);
         mapa.getController().setZoom(17.0);
         mapa.getController().setCenter(CLINICA);
