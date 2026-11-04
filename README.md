@@ -61,10 +61,12 @@ O app avisa sozinho quando sai uma versão nova ("Atualizar aplicativo?"), baixa
 | Agendamento | Online ou presencial, calendário de 60 dias (sem domingo), horários ocupados e já passados desabilitados |
 | Fila ao vivo | Entra na fila de um médico online, vê a posição e o tempo estimado em tempo real |
 | Videochamada | Quando o médico chama ("É a sua vez"), a consulta acontece por vídeo dentro do app (Jitsi Meet) |
+| E-mail de confirmação | Ao agendar e quando o médico confirma, o paciente recebe um e-mail com médico, data, horário e modalidade |
 | Minhas consultas | Lista de agendamentos com status e botão de vídeo nas consultas online em atendimento |
 | Carteira e Perfil | Gastos com consultas, dados pessoais e sair |
 | Cadastro e Login | E-mail/senha ou Google, recuperação de senha; quem escolheu um médico antes de logar volta direto para o agendamento |
-| Localização | Mapa OpenStreetMap com a clínica e o GPS do usuário |
+| Localização | Mapa OpenStreetMap com o pin da clínica, sua posição pelo GPS (atualiza a cada 3 s) e a distância até lá |
+| Perfil offline | Cadastro salvo no aparelho com ROOM: o perfil abre na hora, mesmo sem internet |
 
 ### Médico
 
@@ -162,8 +164,7 @@ O app avisa sozinho quando sai uma versão nova ("Atualizar aplicativo?"), baixa
 | Videochamada | Jitsi Meet SDK 13.3 | Consulta por vídeo dentro do app (servidor meet.ffmuc.net) |
 | Geolocalização | FusedLocationProviderClient | Obtenção das coordenadas GPS do usuário |
 | Mapa | OpenStreetMap + osmdroid | Exibição do mapa interativo sem API Key |
-| E-mail | JavaMail (SMTP Gmail) | Confirmação de agendamento por e-mail |
-| Backend Serverless | Firebase Cloud Functions | Gatilho de e-mail via Firestore |
+| E-mail | Função serverless `email-api` (Vercel + Nodemailer/SMTP) | Confirmação da consulta por e-mail sem guardar senha no app |
 | Qualidade | Android Lint + pre-commit | Bloqueia commit com erro de Lint |
 | CI/CD | GitHub Actions + Releases | APK a cada push, fotos das telas e atualização dentro do app |
 
@@ -229,13 +230,13 @@ As regras ficam em [`firestore.rules`](firestore.rules) e somam as da master (`m
 │       │   ├── CarteiraActivity, PerfilActivity, EnderecoActivity
 │       │   ├── NavegacaoInferior, Sessao, Tela         # navegação e sessão
 │       │   ├── Medico, Consulta, EntradaFila           # modelos do Firestore
-│       │   ├── Videochamada, Atualizador, EmailSender  # integrações
+│       │   ├── Videochamada, Atualizador, ConfirmacaoEmail  # integrações
 │       │   └── Paciente, PacienteDao, AppDatabase, PacienteRepository  # ROOM
 │       └── androidTest/.../CapturaTelasTest.java      # gera as fotos das telas
 ├── docs/telas/                     # prints gerados pelo CI
 ├── scripts/capturar_telas.sh
 ├── firestore.rules · firebase.json
-├── functions/                      # Cloud Functions (e-mail)
+├── email-api/api/confirmar.js      # Serviço do e-mail de confirmação (Vercel)
 └── README.md
 ```
 
@@ -302,6 +303,10 @@ Implementada via Firebase Authentication com Google Sign-In. O perfil (paciente,
 ### 4. Geolocalização
 
 Utiliza `FusedLocationProviderClient` para obter as coordenadas GPS do usuário e a biblioteca `osmdroid` para renderizar o mapa OpenStreetMap com um marcador fixo na clínica e outro marcador dinâmico na posição atual do usuário.
+
+### E-mail de confirmação
+
+Senha de e-mail dentro do APK pode ser extraída por qualquer pessoa, então o envio sai de uma função serverless (`email-api`, publicada em `vidaplus-email.vercel.app`). O app manda só o *ID token* do Firebase do usuário (`ConfirmacaoEmail.java`); a função valida o token, lê a consulta no Firestore com as permissões daquele usuário e envia o e-mail HTML ao paciente — uma vez ao agendar e outra quando o médico confirma (sem duplicar).
 
 ### Extras desta branch
 

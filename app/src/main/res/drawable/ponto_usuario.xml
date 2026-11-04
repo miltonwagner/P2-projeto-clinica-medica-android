@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Marcador "você está aqui" no mapa: ponto azul com borda branca. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <size android:width="26dp" android:height="26dp" />
+            <solid android:color="#333B82F6" />
+        </shape>
+    </item>
+    <item android:bottom="6dp" android:left="6dp" android:right="6dp" android:top="6dp">
+        <shape android:shape="oval">
+            <solid android:color="#3B82F6" />
+            <stroke android:width="2dp" android:color="#FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

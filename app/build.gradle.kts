@@ -83,6 +83,14 @@ dependencies {
     // Videochamada das consultas (Jitsi Meet)
     implementation("org.jitsi.react:jitsi-meet-sdk:13.3.0")
 
+    // Banco local (ROOM): cópia do cadastro do paciente no aparelho.
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+
+    // Geolocalização: mapa OpenStreetMap (sem API Key) + GPS do usuário.
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

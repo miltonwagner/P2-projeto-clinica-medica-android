@@ -60,17 +60,41 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void carregarDados(String colecao, String uid) {
+        boolean paciente = "pacientes".equals(colecao);
+        if (paciente) {
+            // 1º o banco local (ROOM): aparece na hora, mesmo sem internet.
+            PacienteRepository.buscar(this, uid, local -> {
+                if (local != null && containerInfo.getChildCount() == 0) {
+                    mostrarNome(local.getNome());
+                    adicionarInfo("Telefone", local.getTelefone());
+                    adicionarInfo("Data de nascimento", local.getDataNascimento());
+                }
+            });
+        }
+
+        // Depois o Firestore (fonte oficial), que atualiza a cópia local.
         FirebaseFirestore.getInstance()
                 .collection(colecao)
                 .document(uid)
                 .get()
-                .addOnSuccessListener(this::preencher);
+                .addOnSuccessListener(documento -> {
+                    if (paciente) {
+                        PacienteRepository.salvarDoFirestore(this, documento);
+                    }
+                    preencher(documento);
+                })
+                .addOnFailureListener(e -> {
+                    if (paciente && containerInfo.getChildCount() > 0) {
+                        adicionarInfo("Modo offline", "Dados salvos no aparelho (ROOM)");
+                    }
+                });
     }
 
     private void preencher(DocumentSnapshot documento) {
         if (!documento.exists()) {
             return;
         }
+        containerInfo.removeAllViews();
 
         String nome = documento.getString("nome");
         if (nome != null && !nome.trim().isEmpty()) {

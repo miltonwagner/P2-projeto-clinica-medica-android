@@ -40,14 +40,30 @@
                 android:layout_marginTop="4dp"
                 android:text="Estamos prontos para receber você." />
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <!-- Mapa OpenStreetMap (osmdroid): pin da clínica + posição do usuário (GPS). -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="280dp"
                 android:layout_marginTop="16dp"
-                android:contentDescription="Foto da Clínica Médica Vida Plus"
-                android:scaleType="centerCrop"
-                android:src="@drawable/foto_clinica_vidaplus"
-                app:shapeAppearanceOverlay="@style/FormaArredondada" />
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/borda"
+                app:strokeWidth="1dp">
+
+                <org.osmdroid.views.MapView
+                    android:id="@+id/mapaClinica"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Mapa com a localização da clínica" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/txtDistancia"
+                style="@style/Texto.Pequeno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Procurando sua localização..." />
 
             <LinearLayout
                 style="@style/Card"

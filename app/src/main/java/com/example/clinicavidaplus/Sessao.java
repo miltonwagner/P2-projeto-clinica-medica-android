@@ -165,6 +165,8 @@ public final class Sessao {
                 .get()
                 .addOnSuccessListener(documento -> {
                     if (documento.exists()) {
+                        // Cópia local do cadastro (ROOM) para o perfil abrir offline.
+                        PacienteRepository.salvarDoFirestore(activity, documento);
                         abrirInicio(activity, PERFIL_PACIENTE);
                         return;
                     }
@@ -238,6 +240,10 @@ public final class Sessao {
 
     /** Logout completo: volta para o marketplace como visitante, sem histórico. */
     public static void sair(Activity activity) {
+        FirebaseUser atual = FirebaseAuth.getInstance().getCurrentUser();
+        if (atual != null) {
+            PacienteRepository.apagar(activity, atual.getUid());
+        }
         encerrar(activity);
         descartarAgendamentoPendente(activity);
 
