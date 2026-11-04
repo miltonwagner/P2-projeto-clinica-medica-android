@@ -4,6 +4,8 @@ set -e
 PKG=com.example.clinicavidaplus
 adb install -r -g app/build/outputs/apk/debug/app-debug.apk
 adb install -r -g app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+# GPS do emulador perto da clínica (Indaiatuba) para o mapa mostrar a distância real.
+adb emu geo fix -47.2105 -23.0920 || true
 adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0

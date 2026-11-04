@@ -27,7 +27,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -47,6 +48,15 @@ public class EnderecoActivity extends AppCompatActivity {
     private static final String ENDERECO = "Rua Bernardino de Campos, 933, Centro, Indaiatuba, SP";
     private static final GeoPoint CLINICA = new GeoPoint(-23.0887583, -47.2159389);
     private static final long INTERVALO_GPS_MS = 3000;
+
+    /** Mapa base CARTO "Voyager": dados do OpenStreetMap, livre para apps sem chave (com atribuição). */
+    private static final OnlineTileSourceBase MAPA_CARTO = new XYTileSource("CartoVoyager", 0, 20, 256, ".png",
+            new String[]{
+                    "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
+                    "https://b.basemaps.cartocdn.com/rastertiles/voyager/",
+                    "https://c.basemaps.cartocdn.com/rastertiles/voyager/",
+                    "https://d.basemaps.cartocdn.com/rastertiles/voyager/"},
+            "© OpenStreetMap contributors © CARTO");
 
     private MapView mapa;
     private Marker marcadorUsuario;
@@ -71,8 +81,10 @@ public class EnderecoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // osmdroid: identifica o app nos servidores de mapa e guarda o cache na pasta do app.
-        Configuration.getInstance().setUserAgentValue(getPackageName());
+        // osmdroid: identifica o app nos servidores de mapa (pacote "com.example" é bloqueado
+        // pelos servidores do OpenStreetMap) e guarda o cache na pasta do app.
+        Configuration.getInstance().setUserAgentValue("VidaPlusClinica/" + BuildConfig.VERSION_CODE
+                + " (Android; +https://github.com/miltonwagner/P2-projeto-clinica-medica-android)");
         Configuration.getInstance().setOsmdroidBasePath(new File(getCacheDir(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(getCacheDir(), "osmdroid/tiles"));
 
@@ -108,7 +120,7 @@ public class EnderecoActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void configurarMapa() {
         mapa = findViewById(R.id.mapaClinica);
-        mapa.setTileSource(TileSourceFactory.MAPNIK);
+        mapa.setTileSource(MAPA_CARTO);
         mapa.setMultiTouchControls(true);
         mapa.getController().setZoom(17.0);
         mapa.getController().setCenter(CLINICA);
