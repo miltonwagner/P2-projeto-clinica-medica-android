@@ -21,8 +21,8 @@ public class EmailSender extends AsyncTask<Void, Void, Boolean> {
     private final String agendamentoId;
     private final OnEmailResult callback;
 
-    private static final String EMAIL_REMETENTE = "milton.wagner2013@gmail.com";
-    private static final String SENHA_APP       = "grlfqohvbnfonqel";
+    private static final String EMAIL_REMETENTE = ""; // removido: credencial nao deve ficar no codigo
+    private static final String SENHA_APP       = "";       // removido: credencial nao deve ficar no codigo
 
     public interface OnEmailResult {
         void onSuccess();
