@@ -19,8 +19,11 @@ android {
         buildConfigField("String", "CANAL_ATUALIZACAO", "\"$canal\"")
 
         // Só processadores de celular (o Jitsi traz libs nativas pesadas por arquitetura).
-        ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        // -PtodasAbis libera x86_64 (emulador do workflow de fotos das telas).
+        if (findProperty("todasAbis") == null) {
+            ndk {
+                abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+            }
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

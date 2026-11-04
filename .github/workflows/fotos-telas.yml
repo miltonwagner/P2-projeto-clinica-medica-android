@@ -1,0 +1,76 @@
+name: Fotos das telas (adriel-lint)
+
+# Sobe um emulador, entra com as contas de teste e fotografa cada tela.
+# Os PNGs vão para docs/telas na própria branch (usados no README).
+on:
+  workflow_dispatch:
+  push:
+    branches: [adriel-lint]
+    paths:
+      - .github/workflows/fotos-telas.yml
+      - scripts/capturar_telas.sh
+      - app/src/androidTest/**
+      - app/src/main/res/layout/**
+
+permissions:
+  contents: write
+
+jobs:
+  fotos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Restaurar google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+
+      - name: Compilar app e teste de captura (com x86_64)
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug assembleDebugAndroidTest --no-daemon -PtodasAbis=1
+
+      - name: Habilitar KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Emulador + fotos
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          SENHA_TESTE: ${{ secrets.VIDAPLUS_SENHA_TESTE }}
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: bash scripts/capturar_telas.sh
+
+      - name: Logs
+        if: always()
+        run: cat instrument.log captura.log 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telas
+          path: docs/telas
+
+      - name: Commitar fotos na branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/telas
+          git diff --cached --quiet || git commit -m "docs: fotos das telas geradas no emulador"
+          git push
