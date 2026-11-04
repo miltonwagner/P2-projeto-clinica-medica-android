@@ -1,6 +1,7 @@
 package com.example.clinicavidaplus;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.jitsi.meet.sdk.JitsiMeetActivity;
@@ -49,8 +50,9 @@ public final class Videochamada {
                     .build();
 
             JitsiMeetActivity.launch(activity, opcoes);
-        } catch (Exception e) {
-            Toast.makeText(activity, "Não foi possível abrir a videochamada.",
+        } catch (Throwable e) {
+            Log.e("Videochamada", "Falha ao abrir o Jitsi", e);
+            Toast.makeText(activity, "Não foi possível abrir a videochamada: " + e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
     }

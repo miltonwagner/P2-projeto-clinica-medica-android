@@ -103,7 +103,8 @@ public class CapturaTelasTest {
 
         // ---- Paciente: "É a sua vez" e limpeza da fila ----
         entrar(EMAIL_PACIENTE, Sessao.PERFIL_PACIENTE);
-        foto("17-fila-sua-vez", tela(FilaActivity.class).putExtra(FilaActivity.EXTRA_MEDICO_ID, medicoId));
+        // "É a sua vez" abre o Jitsi sozinho: espera a sala conectar.
+        foto("17-videochamada", tela(FilaActivity.class).putExtra(FilaActivity.EXTRA_MEDICO_ID, medicoId), 25000);
         for (QueryDocumentSnapshot d : Tasks.await(db.collection("fila")
                 .whereEqualTo("pacienteId", pacienteId).get(), 30, TimeUnit.SECONDS)) {
             String status = d.getString("status");
@@ -121,8 +122,12 @@ public class CapturaTelasTest {
 
     /** Abre a tela, espera o Firestore carregar e salva o PNG. Falha de uma tela não para as outras. */
     private void foto(String nome, Intent intent) {
+        foto(nome, intent, 6000);
+    }
+
+    private void foto(String nome, Intent intent, long esperaMs) {
         try (ActivityScenario<Activity> cenario = ActivityScenario.launch(intent)) {
-            Thread.sleep(6000);
+            Thread.sleep(esperaMs);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Bitmap imagem = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
             try (FileOutputStream saida = new FileOutputStream(new File(pasta, nome + ".png"))) {

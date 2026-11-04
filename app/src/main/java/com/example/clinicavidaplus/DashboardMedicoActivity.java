@@ -403,7 +403,7 @@ public class DashboardMedicoActivity extends AppCompatActivity {
             ((LinearLayout.LayoutParams) video.getLayoutParams()).topMargin = Tela.dp(this, 14);
             video.setOnClickListener(v -> Videochamada.entrar(this,
                     item.aoVivo != null ? item.aoVivo.id : item.agendada.id,
-                    medico != null ? medico.nome : "Médico"));
+                    nomeMedico()));
             card.addView(video);
         }
 
@@ -495,8 +495,15 @@ public class DashboardMedicoActivity extends AppCompatActivity {
 
         db.collection("agendamentos").document(consulta.id)
                 .update("status", status)
-                .addOnSuccessListener(r -> Toast.makeText(this,
-                        "Consulta: " + status.toLowerCase(Locale.ROOT) + ".", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(r -> {
+                    Toast.makeText(this,
+                            "Consulta: " + status.toLowerCase(Locale.ROOT) + ".", Toast.LENGTH_SHORT).show();
+                    // Consulta online: ao atender, o médico já entra na videochamada.
+                    if (Consulta.EM_ATENDIMENTO.equals(status)
+                            && !"Presencial".equalsIgnoreCase(consulta.modalidade)) {
+                        Videochamada.entrar(this, consulta.id, nomeMedico());
+                    }
+                })
                 .addOnFailureListener(e -> {
                     botao.setEnabled(true);
                     outro.setEnabled(true);
@@ -514,11 +521,21 @@ public class DashboardMedicoActivity extends AppCompatActivity {
 
         db.collection(EntradaFila.COLECAO).document(entrada.id)
                 .update(dados)
+                .addOnSuccessListener(r -> {
+                    // Fila ao vivo é sempre por vídeo: ao chamar, o médico já entra na sala.
+                    if (EntradaFila.EM_ATENDIMENTO.equals(status)) {
+                        Videochamada.entrar(this, entrada.id, nomeMedico());
+                    }
+                })
                 .addOnFailureListener(e -> {
                     botao.setEnabled(true);
                     outro.setEnabled(true);
                     Toast.makeText(this, "Não foi possível atualizar a fila.", Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private String nomeMedico() {
+        return medico != null && medico.nome != null ? medico.nome : "Médico";
     }
 
     private void abrirProntuario(String pacienteId) {

@@ -183,6 +183,8 @@ public class FilaActivity extends AppCompatActivity {
     }
 
     private int ultimaPosicao = 0;
+    /** Entrada da fila cuja videochamada já foi aberta sozinha (abre só uma vez). */
+    private String chamadaAberta;
 
     private void atualizar(int aFrente) {
         if (aFrente >= 0) {
@@ -214,6 +216,11 @@ public class FilaActivity extends AppCompatActivity {
             video.setOnClickListener(v -> Videochamada.entrar(this, minhaEntrada.id, nomePaciente()));
             container.addView(video);
             container.addView(info("Permita câmera e microfone quando o app pedir."));
+            // O médico chamou: entra direto na sala (uma vez; depois fica o botão).
+            if (!minhaEntrada.id.equals(chamadaAberta)) {
+                chamadaAberta = minhaEntrada.id;
+                Videochamada.entrar(this, minhaEntrada.id, nomePaciente());
+            }
         } else if (EntradaFila.ATENDIDO.equals(minhaEntrada.status)) {
             resumo.addView(destaque("✓", "Atendimento finalizado",
                     "Obrigado por usar a Vida Plus."));
