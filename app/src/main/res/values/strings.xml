@@ -16,7 +16,7 @@
     <item>Dr. Carlos Silva (Ortopedia)</item>
     <item>Dra. Helena Antunes (Dermatologia)</item>
   </string-array>
-  <string name="login_titulo">Psiconnect</string>
+  <string name="login_titulo">Vida Plus</string>
   <string name="login_subtitulo">Agende sua consulta com facilidade</string>
   <string name="login_label_email">E-mail</string>
   <string name="login_hint_email">seu@email.com</string>
