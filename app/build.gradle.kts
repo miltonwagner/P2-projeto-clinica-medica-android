@@ -8,7 +8,8 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.clinicavidaplus"
+        // -Ploja = versão da Google Play (pacote próprio; "com.example" é recusado pela Play).
+        applicationId = if (findProperty("loja") != null) "br.com.consultas" else "com.example.clinicavidaplus"
         minSdk = 26 // SDK do Jitsi exige Android 8+
         targetSdk = 36
         // No GitHub Actions: versionCode crescente e o canal (release) que o app consulta.
@@ -29,8 +30,24 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Chave de upload da Play Store (só no CI: vem dos GitHub Secrets).
+    signingConfigs {
+        create("upload") {
+            val arquivo = System.getenv("UPLOAD_KEYSTORE_PATH")
+            if (arquivo != null) {
+                storeFile = file(arquivo)
+                storePassword = System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("UPLOAD_KEY_ALIAS") ?: "upload"
+                keyPassword = System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (System.getenv("UPLOAD_KEYSTORE_PATH") != null) {
+                signingConfig = signingConfigs.getByName("upload")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -1,0 +1,68 @@
+name: Build AAB Google Play (adriel-lint)
+
+# Gera o pacote da Google Play: pacote br.com.consultas, build release assinado com a
+# chave de UPLOAD (GitHub Secrets) e SEM auto-update (proibido pela política da loja).
+# O .aab fica no release "aab-loja" para enviar no Play Console (teste fechado).
+on:
+  push:
+    branches: [adriel-lint]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aab-loja
+  cancel-in-progress: true
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    env:
+      TAG: aab-loja
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Restaurar google-services.json e chave de upload
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          UPLOAD_KEYSTORE: ${{ secrets.UPLOAD_KEYSTORE }}
+        run: |
+          echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+          echo "$UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          echo "UPLOAD_KEYSTORE_PATH=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+
+      - name: Versao do build (minutos desde 2026, sempre crescente)
+        run: echo "VC=$(( ($(date +%s) - 1767225600) / 60 ))" >> "$GITHUB_ENV"
+
+      - name: Compilar AAB release (Play Store)
+        env:
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease --no-daemon --stacktrace -Ploja=1 -PversionCodeCi="$VC"
+          cp app/build/outputs/bundle/release/app-release.aab "VidaPlus-$VC.aab"
+          # Conferências: assinado com a chave de upload e sem a permissão de auto-instalar.
+          jarsigner -verify -certs "VidaPlus-$VC.aab" | grep -m1 "jar verified"
+          unzip -p "VidaPlus-$VC.aab" base/manifest/AndroidManifest.xml | grep -a -c REQUEST_INSTALL_PACKAGES && exit 1 || echo "sem REQUEST_INSTALL_PACKAGES"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VidaPlus-aab
+          path: VidaPlus-*.aab
+
+      - name: Publicar no release aab-loja
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$TAG" "VidaPlus-$VC.aab" --prerelease --target "$GITHUB_SHA" \
+            --title "AAB Google Play (versionCode $VC)" \
+            --notes "Pacote br.com.consultas para enviar no Play Console (teste fechado). Commit $(git rev-parse --short HEAD)."

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Só no APK do GitHub (debug): o app baixa e instala a versão nova sozinho.
+     A versão da Google Play (release) não tem esta permissão — a política da loja proíbe. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+</manifest>
