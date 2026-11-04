@@ -497,6 +497,7 @@ public class AgendarActivity extends AppCompatActivity {
         db.collection("agendamentos")
                 .add(consulta)
                 .addOnSuccessListener(referencia -> {
+                    ConfirmacaoEmail.enviar(referencia.getId());
                     Intent intent = new Intent(this, AgendamentoSucessoActivity.class);
                     intent.putExtra("agendamentoId", referencia.getId());
                     intent.putExtra("medico", medico.nome);

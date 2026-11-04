@@ -1,0 +1,9 @@
+{
+  "name": "vidaplus-email-api",
+  "private": true,
+  "description": "Envia o e-mail de confirmação de consulta do app Vida Plus (função serverless)",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}

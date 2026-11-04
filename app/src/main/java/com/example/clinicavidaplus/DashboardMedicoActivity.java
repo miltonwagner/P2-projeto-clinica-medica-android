@@ -498,6 +498,9 @@ public class DashboardMedicoActivity extends AppCompatActivity {
                 .addOnSuccessListener(r -> {
                     Toast.makeText(this,
                             "Consulta: " + status.toLowerCase(Locale.ROOT) + ".", Toast.LENGTH_SHORT).show();
+                    if (Consulta.CONFIRMADO.equals(status)) {
+                        ConfirmacaoEmail.enviar(consulta.id);
+                    }
                     // Consulta online: ao atender, o médico já entra na videochamada.
                     if (Consulta.EM_ATENDIMENTO.equals(status)
                             && !"Presencial".equalsIgnoreCase(consulta.modalidade)) {
