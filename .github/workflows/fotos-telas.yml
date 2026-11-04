@@ -11,9 +11,15 @@ on:
       - scripts/capturar_telas.sh
       - app/src/androidTest/**
       - app/src/main/res/layout/**
+      - app/src/main/res/values/**
+      - app/src/main/java/**
 
 permissions:
   contents: write
+
+concurrency:
+  group: fotos-telas
+  cancel-in-progress: true
 
 jobs:
   fotos:
@@ -73,4 +79,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/telas
           git diff --cached --quiet || git commit -m "docs: fotos das telas geradas no emulador"
-          git push
+          git pull --rebase origin adriel-lint
+          git push origin HEAD:adriel-lint
