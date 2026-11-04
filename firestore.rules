@@ -1,66 +1,422 @@
+
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // =====================================================
+    // FUNÇÕES DE SEGURANÇA
+    // =====================================================
 
     function logado() {
       return request.auth != null;
     }
 
     function admin() {
-      return logado() && request.auth.token.admin == true;
+      return logado()
+        && request.auth.token.admin == true;
     }
 
     function medicoAutorizado() {
       return logado()
-        && exists(/databases/$(database)/documents/medicos/$(request.auth.uid))
-        && get(/databases/$(database)/documents/medicos/$(request.auth.uid)).data.autorizado == true;
+        && exists(
+          /databases/$(database)/documents/medicos/$(request.auth.uid)
+        )
+        && get(
+          /databases/$(database)/documents/medicos/$(request.auth.uid)
+        ).data.autorizado == true;
     }
 
-    // Paciente lê/edita o próprio cadastro; médico autorizado e admin podem ler.
+    function medicoAutorizadoPorId(medicoId) {
+      return medicoId is string
+        && exists(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        )
+        && get(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        ).data.autorizado == true;
+    }
+
+    // Verifica se o agendamento correspondente existe
+    // após a conclusão da mesma transação.
+
+    function agendamentoCorresponde(
+      agendamentoId,
+      horarioId,
+      medicoId
+    ) {
+      let caminho =
+        /databases/$(database)/documents/agendamentos/$(agendamentoId);
+
+      return agendamentoId is string
+        && existsAfter(caminho)
+        && getAfter(caminho).data.usuarioId == request.auth.uid
+        && getAfter(caminho).data.medicoId == medicoId
+        && getAfter(caminho).data.horarioId == horarioId
+        && getAfter(caminho).data.status == 'Agendado'
+        && getAfter(caminho).data.data == request.resource.data.data
+        && getAfter(caminho).data.horario == request.resource.data.horario;
+    }
+
+    // Validação dos dados publicados dos médicos.
+
+    function dadosMedicoPublicoValidos() {
+      return request.resource.data.keys().hasAll([
+          'nome',
+          'especialidade'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'nome',
+          'especialidade',
+          'bio',
+          'avaliacao',
+          'avaliacoes',
+          'valor',
+          'atendimento',
+          'online',
+          'fotoUrl'
+        ])
+        && request.resource.data.nome is string
+        && request.resource.data.especialidade is string
+        && (
+          !('bio' in request.resource.data.keys())
+          || request.resource.data.bio is string
+        )
+        && (
+          !('avaliacao' in request.resource.data.keys())
+          || request.resource.data.avaliacao is number
+        )
+        && (
+          !('avaliacoes' in request.resource.data.keys())
+          || request.resource.data.avaliacoes is int
+        )
+        && (
+          !('valor' in request.resource.data.keys())
+          || request.resource.data.valor is number
+        )
+        && (
+          !('atendimento' in request.resource.data.keys())
+          || request.resource.data.atendimento is string
+        )
+        && (
+          !('online' in request.resource.data.keys())
+          || request.resource.data.online is bool
+        )
+        && (
+          !('fotoUrl' in request.resource.data.keys())
+          || request.resource.data.fotoUrl is string
+        );
+    }
+
+    // =====================================================
+    // PACIENTES
+    // =====================================================
+
     match /pacientes/{userId} {
-      allow read: if logado() && (request.auth.uid == userId || medicoAutorizado() || admin());
-      allow create, update: if logado() && request.auth.uid == userId;
+
+      allow read: if logado()
+        && (
+          request.auth.uid == userId
+          || medicoAutorizado()
+          || admin()
+        );
+
+      allow create, update: if logado()
+        && request.auth.uid == userId;
+
       allow delete: if admin();
     }
 
-    // Login consulta medicos/{uid} para definir o perfil; só admin cadastra/autoriza.
-    // O próprio médico só pode alterar o status "online" e a apresentação (bio).
+    // =====================================================
+    // MÉDICOS - COLEÇÃO PRIVADA
+    // =====================================================
+
     match /medicos/{medicoId} {
-      // Leitura pública: o marketplace aparece antes do login.
+
+      allow get: if admin()
+        || (
+          logado()
+          && request.auth.uid == medicoId
+        );
+
+      allow list: if admin();
+
+      allow create, update, delete: if admin();
+
+      // [app adriel-lint] marketplace lê medicos antes do login;
+      // o médico liga/desliga "ao vivo", modo de atendimento e bio.
       allow read: if true;
-      allow create, delete: if admin();
-      allow update: if admin()
-        || (logado() && request.auth.uid == medicoId
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['online', 'bio', 'atendimento']));
+      allow update: if logado()
+        && request.auth.uid == medicoId
+        && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['online', 'bio', 'atendimento']);
     }
 
-    // Prontuário: anotações visíveis e editáveis apenas pelo médico que as criou.
+    // =====================================================
+    // MÉDICOS - COLEÇÃO PÚBLICA
+    // =====================================================
+
+    match /medicos_publicos/{medicoId} {
+
+      allow read: if true;
+
+      allow create, update: if admin()
+        && existsAfter(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        )
+        && getAfter(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        ).data.autorizado == true
+        && dadosMedicoPublicoValidos();
+
+      allow delete: if admin()
+        && existsAfter(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        )
+        && getAfter(
+          /databases/$(database)/documents/medicos/$(medicoId)
+        ).data.autorizado == false;
+    }
+
+    // =====================================================
+    // ANOTAÇÕES MÉDICAS
+    // =====================================================
+
     match /anotacoes/{doc} {
-      allow read, update, delete: if medicoAutorizado() && resource.data.medicoId == request.auth.uid;
-      allow create: if medicoAutorizado() && request.resource.data.medicoId == request.auth.uid;
+
+      allow read, update, delete: if medicoAutorizado()
+        && resource.data.medicoId == request.auth.uid;
+
+      allow create: if medicoAutorizado()
+        && request.resource.data.medicoId == request.auth.uid;
     }
 
-    // Agenda precisa ver horários ocupados de todos os pacientes.
-    // Fila ao vivo: o paciente entra/sai; o médico da fila chama e finaliza.
-    // Não guarda nome nem motivo, pois a posição é calculada lendo a fila.
+    // =====================================================
+    // FILA DE ATENDIMENTO
+    // =====================================================
+
     match /fila/{doc} {
+
       allow read: if logado();
+
       allow create: if logado()
         && request.resource.data.pacienteId == request.auth.uid
         && request.resource.data.status == 'aguardando';
+
       allow update: if logado() && (
-        (resource.data.medicoId == request.auth.uid && medicoAutorizado())
-        || (resource.data.pacienteId == request.auth.uid
-            && request.resource.data.status == 'cancelado'
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])));
+        (
+          resource.data.medicoId == request.auth.uid
+          && medicoAutorizado()
+        )
+        ||
+        (
+          resource.data.pacienteId == request.auth.uid
+          && request.resource.data.status == 'cancelado'
+          && request.resource.data.diff(resource.data)
+              .affectedKeys().hasOnly(['status'])
+        )
+      );
     }
+
+    // =====================================================
+    // AGENDAMENTOS
+    // =====================================================
 
     match /agendamentos/{doc} {
-      allow read, write: if logado();
+
+      // Administrador consulta todos.
+      // Paciente consulta seus próprios agendamentos.
+      // Médico autorizado consulta os destinados a ele.
+
+      allow read: if admin()
+        || (
+          logado()
+          && resource.data.usuarioId == request.auth.uid
+        )
+        || (
+          medicoAutorizado()
+          && resource.data.medicoId == request.auth.uid
+        );
+
+      // Criação pelo paciente autenticado.
+
+      allow create: if logado()
+        && request.resource.data.keys().hasAll([
+          'usuarioId',
+          'medicoId',
+          'status',
+          'horarioId',
+          'data',
+          'horario'
+        ])
+        && request.resource.data.usuarioId == request.auth.uid
+        && request.resource.data.status == 'Agendado'
+        && medicoAutorizadoPorId(
+          request.resource.data.medicoId
+        );
+
+      // Atualização:
+      // 1. Administrador mantém sua permissão original.
+      // 2. Médico responsável pode marcar como Executado.
+      // 3. Paciente pode cancelar sua própria consulta.
+      //    Se o horário estiver ocupado, sua liberação
+      //    deverá ocorrer na mesma transação.
+
+      allow update: if admin()
+
+        || (
+          medicoAutorizado()
+          && resource.data.medicoId == request.auth.uid
+          && resource.data.status == 'Agendado'
+          && request.resource.data.diff(resource.data)
+              .affectedKeys().hasOnly(['status'])
+          && request.resource.data.status == 'Executado'
+        )
+
+        || (
+          logado()
+          && resource.data.usuarioId == request.auth.uid
+          && resource.data.status == 'Agendado'
+          && request.resource.data.status == 'Cancelado'
+          && request.resource.data.diff(resource.data)
+              .affectedKeys().hasOnly(['status'])
+
+          // Se existe horário ocupado, exige que ele
+          // corresponda à consulta e seja excluído
+          // na mesma transação.
+
+          && (
+            !('horarioId' in resource.data.keys())
+
+            || !exists(
+              /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+            )
+
+            || (
+              get(
+                /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+              ).data.agendamentoId == doc
+
+              && get(
+                /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+              ).data.medicoId == resource.data.medicoId
+
+              && get(
+                /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+              ).data.data == resource.data.data
+
+              && get(
+                /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+              ).data.horario == resource.data.horario
+
+              && !existsAfter(
+                /databases/$(database)/documents/horarios_ocupados/$(resource.data.horarioId)
+              )
+            )
+          )
+        );
+
+      // Exclusão somente pelo administrador.
+
+      allow delete: if admin();
+      // [app adriel-lint] agenda mostra horários ocupados de todos;
+      // paciente cria/edita a própria consulta; médico muda o status
+      // (Confirmado, Em atendimento, Concluído, Recusado).
+      allow read: if logado();
+      allow create: if logado()
+        && request.resource.data.usuarioId == request.auth.uid
+        && request.resource.data.status == 'Agendado';
+      allow update: if logado() && (
+        resource.data.usuarioId == request.auth.uid
+        || (medicoAutorizado() && resource.data.medicoId == request.auth.uid));
     }
 
+    // =====================================================
+    // HORÁRIOS OCUPADOS
+    // =====================================================
+
+    match /horarios_ocupados/{horarioId} {
+
+      allow read: if logado();
+
+      // Reserva de horário vinculada a agendamento.
+
+      allow create: if logado()
+        && request.resource.data.keys().hasAll([
+          'medicoId',
+          'data',
+          'horario',
+          'dataChave',
+          'horarioChave',
+          'ocupado',
+          'agendamentoId'
+        ])
+        && request.resource.data.ocupado == true
+        && medicoAutorizadoPorId(
+          request.resource.data.medicoId
+        )
+        && agendamentoCorresponde(
+          request.resource.data.agendamentoId,
+          horarioId,
+          request.resource.data.medicoId
+        );
+
+      // Nenhum usuário pode modificar diretamente
+      // os dados de um horário ocupado.
+
+      allow update: if false;
+
+      // Exclusão:
+      // Administrador mantém sua permissão.
+      // Paciente somente libera o horário de sua própria
+      // consulta quando ela é cancelada na mesma transação.
+
+      allow delete: if admin()
+
+        || (
+          logado()
+          && resource.data.ocupado == true
+          && resource.data.agendamentoId is string
+
+          && existsAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          )
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.usuarioId == request.auth.uid
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.status == 'Cancelado'
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.horarioId == horarioId
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.medicoId == resource.data.medicoId
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.data == resource.data.data
+
+          && getAfter(
+            /databases/$(database)/documents/agendamentos/$(resource.data.agendamentoId)
+          ).data.horario == resource.data.horario
+        );
+    }
+
+    // =====================================================
+    // USUÁRIOS
+    // =====================================================
+
     match /usuarios/{userId} {
-      allow read, write: if logado() && request.auth.uid == userId;
+
+      allow read, write: if logado()
+        && request.auth.uid == userId;
     }
   }
 }
+
