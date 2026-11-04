@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Privacidade — Vida Plus</title>
+<style>
+  :root { --azul: #2563EB; --texto: #0F172A; --cinza: #475569; --fundo: #F8FAFC; --borda: #E2E8F0 }
+  * { box-sizing: border-box }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif }
+  header { background: linear-gradient(135deg, #1D4ED8, #3B82F6 60%, #22D3EE); color: #fff; padding: 40px 16px 32px }
+  header div, main { max-width: 760px; margin: 0 auto }
+  header h1 { margin: 0; font-size: 28px } header p { margin: 6px 0 0; opacity: .9 }
+  main { padding: 24px 16px 56px }
+  h2 { font-size: 19px; margin: 30px 0 8px; color: var(--azul) }
+  p, li { color: var(--cinza) } ul { padding-left: 22px }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 15px; background: #fff }
+  th, td { border: 1px solid var(--borda); padding: 8px 10px; text-align: left; vertical-align: top }
+  th { background: #EFF6FF; color: var(--texto) }
+  .nota { background: #fff; border: 1px solid var(--borda); border-left: 4px solid var(--azul); border-radius: 8px; padding: 12px 16px }
+  footer { color: #94A3B8; font-size: 14px; margin-top: 40px }
+</style>
+</head>
+<body>
+<header><div><h1>Política de Privacidade — Vida Plus</h1><p>Aplicativo de agendamento e consultas da Clínica Médica Vida Plus · Atualizada em 4 de novembro de 2026</p></div></header>
+<main>
+<p class="nota">O Vida Plus é um projeto acadêmico (Fatec Indaiatuba — Desenvolvimento de Software Multiplataforma) que simula uma clínica médica. Não use o aplicativo para emergências médicas.</p>
+
+<h2>1. Quais dados coletamos</h2>
+<table>
+<tr><th>Dado</th><th>Para que usamos</th></tr>
+<tr><td>Nome, e-mail, telefone e data de nascimento</td><td>Criar sua conta, identificar você nas consultas e enviar confirmações.</td></tr>
+<tr><td>Login (e-mail/senha ou conta Google)</td><td>Autenticação pelo Firebase Authentication. Não temos acesso à sua senha.</td></tr>
+<tr><td>Agendamentos (médico, data, horário, modalidade, motivo, valor)</td><td>Marcar, confirmar e realizar a consulta.</td></tr>
+<tr><td>Entrada na fila de atendimento ao vivo</td><td>Mostrar sua posição e avisar quando for a sua vez.</td></tr>
+<tr><td>Anotações de prontuário (escritas pelo médico)</td><td>Registro do atendimento, visível somente ao médico que escreveu.</td></tr>
+<tr><td>Localização aproximada/precisa (GPS)</td><td>Mostrar sua posição e a distância até a clínica no mapa. <b>Fica só no seu aparelho — não é enviada nem armazenada por nós.</b></td></tr>
+<tr><td>Câmera e microfone</td><td>Usados apenas durante a videochamada da consulta, quando você entra na sala. Não gravamos as chamadas.</td></tr>
+</table>
+
+<h2>2. Onde os dados ficam e com quem são compartilhados</h2>
+<ul>
+<li><b>Google Firebase</b> (Authentication e Cloud Firestore): armazenamento da conta e dos dados de consultas, com regras de acesso por perfil.</li>
+<li><b>Jitsi Meet</b> (servidor meet.ffmuc.net): transmissão de áudio e vídeo da consulta em tempo real, criptografada em trânsito. A sala é exclusiva de cada atendimento.</li>
+<li><b>Serviço de e-mail</b> (função na Vercel + servidor SMTP): envio do e-mail de confirmação da consulta.</li>
+<li><b>OpenStreetMap</b>: imagens do mapa da clínica (não recebe seus dados pessoais).</li>
+</ul>
+<p>Não vendemos seus dados e não os usamos para publicidade.</p>
+
+<h2>3. Quem pode ver seus dados</h2>
+<ul>
+<li>Você vê seus próprios dados e consultas.</li>
+<li>O médico vê os dados das consultas marcadas com ele e o prontuário que ele mesmo escreveu.</li>
+<li>O administrador da clínica gerencia o cadastro de médicos.</li>
+</ul>
+
+<h2>4. Segurança</h2>
+<p>As conexões usam HTTPS/TLS. O acesso ao banco de dados é controlado por regras de segurança no servidor, e nenhuma senha de serviço fica dentro do aplicativo.</p>
+
+<h2>5. Por quanto tempo guardamos</h2>
+<p>Os dados ficam armazenados enquanto sua conta existir. Ao sair da conta, a cópia salva no aparelho é apagada.</p>
+
+<h2>6. Seus direitos (LGPD)</h2>
+<p>Você pode pedir acesso, correção ou exclusão dos seus dados e da sua conta a qualquer momento, pelo e-mail de contato do desenvolvedor informado na página do Vida Plus na Google Play. Respondemos em até 15 dias.</p>
+
+<h2>7. Crianças</h2>
+<p>O aplicativo não é destinado a menores de 13 anos sem acompanhamento de um responsável.</p>
+
+<h2>8. Alterações</h2>
+<p>Esta política pode ser atualizada; a data no topo indica a versão atual.</p>
+
+<footer>Clínica Médica Vida Plus — Rua Bernardino de Campos, 933, Centro, Indaiatuba – SP</footer>
+</main>
+</body>
+</html>
