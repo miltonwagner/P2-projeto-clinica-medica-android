@@ -6,6 +6,12 @@ adb install -r -g app/build/outputs/apk/debug/app-debug.apk
 adb install -r -g app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 # GPS do emulador perto da clínica (Indaiatuba) para o mapa mostrar a distância real.
 adb emu geo fix -47.2105 -23.0920 || true
+# Esconde avisos "X não está respondendo" (o emulador do CI é lento) e espera o sistema assentar.
+adb shell settings put global hide_error_dialogs 1
+adb shell settings put secure anr_show_background 0
+adb shell input keyevent KEYCODE_HOME
+sleep 45
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1 || true
 adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0

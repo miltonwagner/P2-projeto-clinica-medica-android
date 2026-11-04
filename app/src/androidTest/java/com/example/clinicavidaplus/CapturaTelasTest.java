@@ -128,6 +128,10 @@ public class CapturaTelasTest {
     private void foto(String nome, Intent intent, long esperaMs) {
         try (ActivityScenario<Activity> cenario = ActivityScenario.launch(intent)) {
             Thread.sleep(esperaMs);
+            // Fecha avisos do sistema (ex.: "Launcher não está respondendo") antes da foto.
+            InstrumentationRegistry.getInstrumentation().getUiAutomation()
+                    .executeShellCommand("am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS").close();
+            Thread.sleep(500);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Bitmap imagem = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
             try (FileOutputStream saida = new FileOutputStream(new File(pasta, nome + ".png"))) {
