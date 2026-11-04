@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícone temático (Android 13+): cruz da Vida Plus. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:translateY="-5">
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M47,31h14a5,5 0 0,1 5,5v11h11a5,5 0 0,1 5,5v14a5,5 0 0,1 -5,5h-11v11a5,5 0 0,1 -5,5h-14a5,5 0 0,1 -5,-5v-11h-11a5,5 0 0,1 -5,-5v-14a5,5 0 0,1 5,-5h11v-11a5,5 0 0,1 5,-5z" />
+    </group>
+</vector>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frente do ícone: cruz médica branca com a linha de batimento (Vida Plus).
+     Tudo dentro da zona segura de 66dp do ícone adaptativo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:translateY="-5">
+        <!-- sombra suave da cruz -->
+        <path
+            android:fillColor="#331E3A8A"
+            android:pathData="M48,34h12a5,5 0 0,1 5,5v10h10a5,5 0 0,1 5,5v12a5,5 0 0,1 -5,5h-10v10a5,5 0 0,1 -5,5h-12a5,5 0 0,1 -5,-5v-10h-10a5,5 0 0,1 -5,-5v-12a5,5 0 0,1 5,-5h10v-10a5,5 0 0,1 5,-5z" />
+        <!-- cruz -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M47,31h14a5,5 0 0,1 5,5v11h11a5,5 0 0,1 5,5v14a5,5 0 0,1 -5,5h-11v11a5,5 0 0,1 -5,5h-14a5,5 0 0,1 -5,-5v-11h-11a5,5 0 0,1 -5,-5v-14a5,5 0 0,1 5,-5h11v-11a5,5 0 0,1 5,-5z" />
+        <!-- batimento cardíaco -->
+        <path
+            android:pathData="M30,59h12l4,-8l6,17l5,-13l3,4h18"
+            android:strokeWidth="4"
+            android:strokeColor="#FF2563EB"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

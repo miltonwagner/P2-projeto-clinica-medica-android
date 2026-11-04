@@ -19,4 +19,11 @@
     </style>
 
     <style name="Theme.ClinicaVidaPlus" parent="Base.Theme.ClinicaVidaPlus" />
+    <!-- Tela de passagem da videochamada (pede câmera/microfone e abre o Jitsi). -->
+    <style name="Theme.ClinicaVidaPlus.Transparente" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

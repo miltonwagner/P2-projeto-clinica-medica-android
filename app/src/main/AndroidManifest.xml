@@ -12,7 +12,8 @@
       android:name=".AppVidaPlus"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
-      android:label="ClinicaVidaPlus"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:label="Vida Plus"
       tools:replace="android:label"
       android:theme="@style/Theme.ClinicaVidaPlus">
 
@@ -101,5 +102,9 @@
           android:name="android.support.FILE_PROVIDER_PATHS"
           android:resource="@xml/caminhos_arquivos" />
     </provider>
+        <activity
+            android:name=".Videochamada"
+            android:exported="false"
+            android:theme="@style/Theme.ClinicaVidaPlus.Transparente" />
   </application>
 </manifest>
