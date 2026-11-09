@@ -36,7 +36,8 @@ public class CapturaTelasTest {
 
     private static final String TAG = "CapturaTelas";
     private static final String EMAIL_PACIENTE = "adriel.paciente@teste.com";
-    private static final String EMAIL_MEDICO = "adriel.medico@teste.com";
+    private static final String EMAIL_MEDICO = "medico@teste.com";
+    private static final String SENHA_MEDICO = "teste1";
 
     private final Context contexto = InstrumentationRegistry.getInstrumentation().getTargetContext();
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -145,7 +146,7 @@ public class CapturaTelasTest {
 
     private String entrar(String email, String perfil) throws Exception {
         auth.signOut();
-        Tasks.await(auth.signInWithEmailAndPassword(email, senha), 30, TimeUnit.SECONDS);
+        Tasks.await(auth.signInWithEmailAndPassword(email, EMAIL_MEDICO.equals(email) ? SENHA_MEDICO : senha), 30, TimeUnit.SECONDS);
         contexto.getSharedPreferences("sessao_vidaplus", Context.MODE_PRIVATE)
                 .edit().putString("perfil", perfil).commit();
         return auth.getCurrentUser().getUid();
