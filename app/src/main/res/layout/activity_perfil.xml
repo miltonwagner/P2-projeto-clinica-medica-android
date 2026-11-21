@@ -100,6 +100,12 @@
                 android:paddingEnd="16dp"
                 android:text="Sair da conta" />
 
+            <Button
+                android:id="@+id/btnExcluirConta"
+                style="@style/Botao.Contorno"
+                android:layout_marginTop="12dp"
+                android:text="Excluir minha conta" />
+
             <TextView
                 style="@style/Texto.Pequeno"
                 android:layout_width="match_parent"

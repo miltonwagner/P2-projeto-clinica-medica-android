@@ -124,7 +124,8 @@ service cloud.firestore {
       allow create, update: if logado()
         && request.auth.uid == userId;
 
-      allow delete: if admin();
+      // Paciente pode excluir a própria conta (exigência da Google Play).
+      allow delete: if admin() || (logado() && request.auth.uid == userId);
     }
 
     // =====================================================

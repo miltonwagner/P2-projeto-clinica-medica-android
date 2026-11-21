@@ -57,6 +57,49 @@ public class PerfilActivity extends AppCompatActivity {
         findViewById(R.id.btnVerClinica).setOnClickListener(v ->
                 startActivity(new android.content.Intent(this, EnderecoActivity.class)));
         findViewById(R.id.btnSairConta).setOnClickListener(v -> Sessao.sair(this));
+        findViewById(R.id.btnExcluirConta).setOnClickListener(v -> confirmarExclusao(usuario, perfil));
+    }
+
+    /** Exclusão de conta dentro do app (exigida pela Google Play). */
+    private void confirmarExclusao(FirebaseUser usuario, String perfil) {
+        if (!Sessao.PERFIL_ADMIN.equals(perfil) && Sessao.PERFIL_MEDICO.equals(perfil)) {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Excluir conta de médico")
+                    .setMessage("Contas de médicos são removidas pela administração da clínica. "
+                            + "Peça a exclusão pelo e-mail de contato da política de privacidade.")
+                    .setPositiveButton("Entendi", null)
+                    .show();
+            return;
+        }
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Excluir minha conta?")
+                .setMessage("Seus dados de cadastro e sua conta de acesso serão apagados "
+                        + "definitivamente. Essa ação não pode ser desfeita.")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Excluir", (d, w) -> excluirConta(usuario))
+                .show();
+    }
+
+    private void excluirConta(FirebaseUser usuario) {
+        String uid = usuario.getUid();
+        FirebaseFirestore.getInstance().collection("pacientes").document(uid).delete()
+                .addOnCompleteListener(tarefaDoc -> usuario.delete()
+                        .addOnSuccessListener(v -> {
+                            android.widget.Toast.makeText(this, "Conta excluída.",
+                                    android.widget.Toast.LENGTH_LONG).show();
+                            Sessao.sair(this);
+                        })
+                        .addOnFailureListener(e -> {
+                            boolean recente = e instanceof
+                                    com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
+                            android.widget.Toast.makeText(this, recente
+                                    ? "Por segurança, entre novamente e tente excluir de novo."
+                                    : "Não foi possível excluir agora. Tente de novo.",
+                                    android.widget.Toast.LENGTH_LONG).show();
+                            if (recente) {
+                                Sessao.sair(this);
+                            }
+                        }));
     }
 
     private void carregarDados(String colecao, String uid) {
